@@ -1,5 +1,6 @@
 #pragma once
-#include "../vendor/GLBox/src/GLBox.h"
+#include <GLBox.h>
+
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()
 #define MAXSPEED (float)5
