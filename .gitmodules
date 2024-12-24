@@ -1,0 +1,3 @@
+[submodule "vendor/GLBox"]
+	path = vendor/GLBox
+	url = git@github.com:FarrukhKamal48/GLBox.git
