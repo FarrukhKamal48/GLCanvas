@@ -7,15 +7,16 @@
 class OtherLayer : public Layer {
 private:
     Pos_Scale_Col_Quad_Manager m_Manager;
+    unsigned int m_O;
 public:
     OtherLayer() : Layer("Verlet Test") { }
     ~OtherLayer() { }
 
     void OnAttach() override {
-        // m_O.scale = glm::vec2(100);
-        // m_O.scale = glm::vec4(1,1,1,1);
-        // m_O.position = glm::vec2(WIDTH/2, HEIGHT/2);
-        // m_Manager.Instantiate(1, &ConfigureShader);
+        m_O = m_Manager.AllocateObject(10, &ConfigureShader);
+        m_Manager[m_O].scale = glm::vec2(100);
+        m_Manager[m_O].scale = glm::vec4(1,1,1,1);
+        m_Manager[m_O].position = glm::vec2(100, 100);
         std::cout << "Attached" << '\n';
     }
 
