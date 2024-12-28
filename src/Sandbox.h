@@ -15,7 +15,7 @@ public:
         // m_O.scale = glm::vec2(100);
         // m_O.scale = glm::vec4(1,1,1,1);
         // m_O.position = glm::vec2(WIDTH/2, HEIGHT/2);
-        m_Manager.Instantiate(1, &ConfigureShader);
+        // m_Manager.Instantiate(1, &ConfigureShader);
         std::cout << "Attached" << '\n';
     }
 
@@ -30,6 +30,7 @@ public:
     }
 
     void ImGuiRender() override {
+        ImGui::ShowDemoWindow();
     }
 private:
     static void ConfigureShader(InstanceRenderer& renderer) {
