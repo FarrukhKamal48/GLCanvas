@@ -4,6 +4,7 @@
 #include "Core/Application.h"
 #include "Core/Instancing/RendererInstanced.h"
 #include "glm/fwd.hpp"
+#include "imgui.h"
 
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()
@@ -47,6 +48,7 @@ public:
     }
 
     void ImGuiRender() override {
+        ImGui::ShowDemoWindow();
     }
 private:
     static void ConfigureShader(InstanceRenderer& renderer) {
