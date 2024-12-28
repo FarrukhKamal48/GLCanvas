@@ -33,6 +33,7 @@ public:
         
     }
 
+    bool spawn = true;
     void Update(float dt) override {
         // m_ObjData[0].position = Lerp(m_ObjData[1].position, 
         //                              glm::vec2(Input::GetMousePos().x, HEIGHT - Input::GetMousePos().y), 10 * dt);
@@ -49,6 +50,16 @@ public:
 
     void ImGuiRender() override {
         ImGui::ShowDemoWindow();
+        ImGui::Begin("Sim Controls");
+        static int inc;
+        if (ImGui::Button("Spawn", ImVec2(100, 100))) {
+            unsigned int objI = m_Manager.AllocateObject(1, &ConfigureShader);
+            inc++;
+            m_Manager[objI].scale = glm::vec2(20);
+            m_Manager[objI].color = glm::vec4(1, 0.5, 0, 1);
+            m_Manager[objI].position = glm::vec2(inc * 50, 20);
+        }
+        ImGui::End();
     }
 private:
     static void ConfigureShader(InstanceRenderer& renderer) {
