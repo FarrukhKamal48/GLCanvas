@@ -1,4 +1,5 @@
 #pragma once
+#include "glm/trigonometric.hpp"
 #include <Core/Input.h>
 #include <Core/Application.h>
 #include <Core/Instancing/RendererInstanced.h>
@@ -20,10 +21,9 @@ public:
     void OnAttach() override {
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
 
-        // set graphic for contraint
         m_Manager[m_Test].position = glm::vec2(WIDTH, HEIGHT)/2.0f;
         m_Manager[m_Test].scale = glm::vec2(100);
-        // m_Manager[m_Test].rotation = PI/4;
+        m_Manager[m_Test].rotation = PI/4;
         m_Manager[m_Test].color = glm::vec4(0,0,0,1);
     }
 
@@ -33,11 +33,9 @@ public:
 
     bool spawn = true;
     void Update(float dt) override {
-        // m_ObjData[0].position = Lerp(m_ObjData[1].position, 
-        //                              glm::vec2(Input::GetMousePos().x, HEIGHT - Input::GetMousePos().y), 10 * dt);
         m_Manager[m_Test].position = glm::vec2(Input::GetMousePos().x, HEIGHT - Input::GetMousePos().y);
-        // m_Manager[m_Test].rotation += dt;
-        
+        m_Manager[m_Test].rotation += dt * 5;
+
         if (Input::Button(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS))
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(8.0f), dt * 10.0f);
         else
@@ -50,13 +48,14 @@ public:
     void ImGuiRender() override {
         ImGui::ShowDemoWindow();
         ImGui::Begin("Sim Controls");
-        static int inc;
+        static int inc = 0;
         if (ImGui::Button("Spawn", ImVec2(100, 100))) {
             unsigned int objI = m_Manager.AllocateObject(1, &ConfigureShader);
             inc++;
-            m_Manager[objI].position = glm::vec2(inc * 50, 20);
+            m_Manager[objI].position = glm::vec2(inc * 50 * glm::sin(inc) + (float)WIDTH/2,
+                                                 inc*5);
             m_Manager[objI].scale = glm::vec2(20);
-            // m_Manager[m_Test].rotation = PI/4;
+            m_Manager[objI].rotation = m_Manager[m_Test].rotation;
             m_Manager[objI].color = glm::vec4(1, 0.5, 0, 1);
         }
         ImGui::End();
@@ -65,10 +64,6 @@ private:
     static void ConfigureShader(InstanceRenderer& renderer) {
         renderer.CreateShader("GLBox/assets/shaders/instancing/RotationQuad.vert", 
                               "GLBox/assets/shaders/instancing/RotationQuad.frag");
-        // renderer.CreateShader("GLBox/assets/shaders/instancing/BasicColorScale.vert", 
-        //                       "GLBox/assets/shaders/instancing/CircleInRectColor.frag");
-        // renderer.InstanceShader->SetUniform<float>("u_CullRadius", 0.5f);
-        // renderer.InstanceShader->SetUniform<float>("u_EdgeSmooth", 1.2f);
     }
 
     glm::vec2 Lerp(glm::vec2 a, glm::vec2 b, float p) {
