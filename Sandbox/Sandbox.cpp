@@ -7,7 +7,7 @@ public:
     MyApp() : Application({ "GLBox", 1920, 1080 })
     {
         // PushLayer(new VerletInstanced());
-        PushLayer(new OtherLayer());
+        PushLayer(new DynamicLayer());
     }
     ~MyApp() { }
 };

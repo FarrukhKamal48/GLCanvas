@@ -8,15 +8,15 @@
 #define TwoPI 2 * glm::pi<float>()
 #define MAXSPEED (float)5
 
-class OtherLayer : public Layer {
+class DynamicLayer : public Layer {
 private:
     QuadTransform_Manager m_Manager;
     unsigned int m_Test;
 public:
-    OtherLayer() 
+    DynamicLayer() 
         : Layer("Other Test")
     { }
-    ~OtherLayer() { }
+    ~DynamicLayer() { }
 
     void OnAttach() override {
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
