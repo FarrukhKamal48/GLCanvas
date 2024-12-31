@@ -1,8 +1,7 @@
 #pragma once
-#include "glm/trigonometric.hpp"
-#include <Core/Input.h>
-#include <Core/Application.h>
-#include <Core/Instancing/RendererInstanced.h>
+#include <GLBox/Core/Input.h>
+#include <GLBox/Core/Application.h>
+#include <GLBox/Renderer/RendererInstanced.h>
 
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()

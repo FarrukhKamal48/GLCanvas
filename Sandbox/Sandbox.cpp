@@ -1,4 +1,4 @@
-#include <Core/EntryPoint.h>
+#include <GLBox/Core/EntryPoint.h>
 #include <ExampleLayers/VerletInstancingLayer.h>
 #include "Sandbox.h"
 
