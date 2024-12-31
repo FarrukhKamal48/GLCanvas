@@ -1,7 +1,10 @@
 #pragma once
-#include <GLBox/Core/Input.h>
+
 #include <GLBox/Core/Application.h>
 #include <GLBox/Renderer/RendererInstanced.h>
+
+#include "GLBox/Events/KeyEvent.h"
+#include "GLBox/Events/MouseEvent.h"
 
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()
@@ -33,7 +36,7 @@ public:
         ImGui::ShowDemoWindow();
         ImGui::Begin("Sim Controls");
         static int inc = 0;
-        if (ImGui::Button("Spawn", ImVec2(100, 100))) {
+        if (ImGui::Button("Spawn Square", ImVec2(100, 100))) {
             unsigned int objI = m_Manager.AllocateObject(1, &ConfigureShader);
             inc++;
             m_Manager[objI].position = glm::vec2(inc * 50 * glm::sin(inc) + (float)WIDTH/2,
@@ -60,19 +63,39 @@ class SpinLayer : public Layer {
 private:
     QuadTransform_Manager m_Manager;
     unsigned int m_Test;
+    glm::vec2 m_MousePos;
+    bool m_MouseDown = false;
 public:
     SpinLayer() 
         : Layer("Spin Test")
     { }
     ~SpinLayer() { }
 
+    void OnEvent(Event& event) override {
+        EventDispacher dispacher(event);       
+        dispacher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event){
+            m_MousePos = { event.GetX(), event.GetY() };
+            return false;
+        });
+        dispacher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event){
+            if (event.GetKeyCode() == GLFW_KEY_F)
+                m_MouseDown = true;
+            return false;
+        });
+        dispacher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent& event){
+            if (event.GetKeyCode() == GLFW_KEY_F)
+                m_MouseDown = false;
+            return false;
+        });
+    }
+
     void OnAttach() override {
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
 
         m_Manager[m_Test].position = glm::vec2(WIDTH, HEIGHT)/2.0f;
-        m_Manager[m_Test].scale = glm::vec2(0);
+        m_Manager[m_Test].scale = glm::vec2(50);
         m_Manager[m_Test].rotation = PI/4;
-        m_Manager[m_Test].color = glm::vec4(0,0,0,1);
+        m_Manager[m_Test].color = glm::vec4(0,0,0,0.6);
     }
 
     void OnDetach() override {
@@ -81,10 +104,10 @@ public:
 
     bool spawn = true;
     void Update(float dt) override {
-        m_Manager[m_Test].position = glm::vec2(Input::GetMousePos().x, HEIGHT - Input::GetMousePos().y);
+        m_Manager[m_Test].position = glm::vec2(m_MousePos.x, HEIGHT - m_MousePos.y);
         m_Manager[m_Test].rotation += dt * 5;
 
-        if (Input::Button(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS))
+        if (m_MouseDown)
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(8.0f), dt * 10.0f);
         else
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(50.0f), dt * 10.0f);
