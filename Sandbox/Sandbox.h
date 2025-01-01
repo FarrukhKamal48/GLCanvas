@@ -1,12 +1,12 @@
 #pragma once
 
-#include "GLBox/Events/WindowEvent.h"
 #include <GLBox/Core/Application.h>
-#include <GLBox/Renderer/RenderCommands.h>
+#include <GLBox/Renderer/Renderer.h>
 #include <GLBox/Renderer/RendererInstanced.h>
 #include <GLBox/Renderer/CameraController.h>
 
 #include <GLBox/Events/KeyEvent.h>
+#include <GLBox/Events/WindowEvent.h>
 #include <GLBox/Events/MouseEvent.h>
 
 #define PI glm::pi<float>()
@@ -43,8 +43,8 @@ public:
             unsigned int objI = m_Manager.AllocateObject(1, &ConfigureShader);
             inc++;
             m_Manager[objI].position = 
-                glm::vec2(inc * 50 * glm::sin(inc) + (float)RenderCommand::GetData().WindowWidth/2, inc*5);
-            m_Manager[objI].scale = glm::vec2(20);
+                glm::vec2(inc * 0.01f * glm::sin(inc) + 0.005f, inc*0.01f);
+            m_Manager[objI].scale = glm::vec2(0.01f);
             m_Manager[objI].rotation = inc*glm::sin(inc*20);
             m_Manager[objI].color = glm::vec4(1, 0.5, 0, 1);
         }
@@ -68,7 +68,7 @@ private:
     unsigned int m_Test;
     glm::vec2 m_MousePos = { 0, 0 };
     glm::vec2 m_WindowSize = { 1920, 1080 };
-    bool m_MouseDown = false;
+    bool m_KeyDown = false;
     OrthoCameraController m_CameraController;
 public:
     SpinLayer() 
@@ -86,14 +86,14 @@ public:
             };
             return false;
         });
-        dispacher.Dispatch<MousePressedEvent>([this](MousePressedEvent& event){
-            if (event.GetMouseButton() == GLFW_MOUSE_BUTTON_LEFT)
-                m_MouseDown = true;
+        dispacher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event){
+            if (event.GetKeyCode() == GLFW_KEY_SPACE)
+                m_KeyDown = true;
             return false;
         });
-        dispacher.Dispatch<MousePressedEvent>([this](MousePressedEvent& event){
-            if (event.GetMouseButton() == GLFW_MOUSE_BUTTON_LEFT)
-                m_MouseDown = false;
+        dispacher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent& event){
+            if (event.GetKeyCode() == GLFW_KEY_SPACE)
+                m_KeyDown = false;
             return false;
         });
         dispacher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
@@ -104,7 +104,7 @@ public:
     }
 
     void OnAttach() override {
-        RenderCommand::SetCamera(m_CameraController.GetCamera());
+        Renderer::SetCamera(m_CameraController.GetCamera());
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
 
         m_Manager[m_Test].position = {0,0};
@@ -122,7 +122,7 @@ public:
         m_Manager[m_Test].position = m_MousePos;
         m_Manager[m_Test].rotation += dt * 5;
 
-        if (m_MouseDown)
+        if (m_KeyDown)
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
         else
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.05f), dt * 10.0f);

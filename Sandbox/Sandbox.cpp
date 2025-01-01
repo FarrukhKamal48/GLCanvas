@@ -4,7 +4,7 @@
 
 class MyApp : public Application {
 public:
-    MyApp() : Application({ "GLBox", 1920, 1080 })
+    MyApp() : Application({ "GLBox", 960, 540 })
     {
         // PushLayer(new VerletInstanced());
         PushLayer(new SpinLayer());
