@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GLBox/Core/Application.h>
+#include "GLBox/Renderer/RenderCommands.h"
 #include <GLBox/Renderer/RendererInstanced.h>
 
 #include "GLBox/Events/KeyEvent.h"
@@ -39,8 +40,8 @@ public:
         if (ImGui::Button("Spawn Square", ImVec2(100, 100))) {
             unsigned int objI = m_Manager.AllocateObject(1, &ConfigureShader);
             inc++;
-            m_Manager[objI].position = glm::vec2(inc * 50 * glm::sin(inc) + (float)WIDTH/2,
-                                                 inc*5);
+            m_Manager[objI].position = 
+                glm::vec2(inc * 50 * glm::sin(inc) + (float)RenderCommand::GetData().WindowWidth/2, inc*5);
             m_Manager[objI].scale = glm::vec2(20);
             m_Manager[objI].rotation = inc*glm::sin(inc*20);
             m_Manager[objI].color = glm::vec4(1, 0.5, 0, 1);
@@ -64,6 +65,7 @@ private:
     QuadTransform_Manager m_Manager;
     unsigned int m_Test;
     glm::vec2 m_MousePos;
+    glm::vec2 m_WindowSize;
     bool m_MouseDown = false;
 public:
     SpinLayer() 
@@ -90,9 +92,10 @@ public:
     }
 
     void OnAttach() override {
+        m_WindowSize = { RenderCommand::GetData().WindowWidth, RenderCommand::GetData().WindowHeight };
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
 
-        m_Manager[m_Test].position = glm::vec2(WIDTH, HEIGHT)/2.0f;
+        m_Manager[m_Test].position = m_WindowSize/2.0f;
         m_Manager[m_Test].scale = glm::vec2(50);
         m_Manager[m_Test].rotation = PI/4;
         m_Manager[m_Test].color = glm::vec4(0,0,0,0.6);
@@ -104,7 +107,8 @@ public:
 
     bool spawn = true;
     void Update(float dt) override {
-        m_Manager[m_Test].position = glm::vec2(m_MousePos.x, HEIGHT - m_MousePos.y);
+        m_WindowSize = { RenderCommand::GetData().WindowWidth, RenderCommand::GetData().WindowHeight };
+        m_Manager[m_Test].position = glm::vec2(m_MousePos.x, m_WindowSize.y - m_MousePos.y);
         m_Manager[m_Test].rotation += dt * 5;
 
         if (m_MouseDown)
