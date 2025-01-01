@@ -1,11 +1,13 @@
 #pragma once
 
+#include "GLBox/Events/WindowEvent.h"
 #include <GLBox/Core/Application.h>
-#include "GLBox/Renderer/RenderCommands.h"
+#include <GLBox/Renderer/RenderCommands.h>
 #include <GLBox/Renderer/RendererInstanced.h>
+#include <GLBox/Renderer/CameraController.h>
 
-#include "GLBox/Events/KeyEvent.h"
-#include "GLBox/Events/MouseEvent.h"
+#include <GLBox/Events/KeyEvent.h>
+#include <GLBox/Events/MouseEvent.h>
 
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()
@@ -64,39 +66,49 @@ class SpinLayer : public Layer {
 private:
     QuadTransform_Manager m_Manager;
     unsigned int m_Test;
-    glm::vec2 m_MousePos;
-    glm::vec2 m_WindowSize;
+    glm::vec2 m_MousePos = { 0, 0 };
+    glm::vec2 m_WindowSize = { 1920, 1080 };
     bool m_MouseDown = false;
+    OrthoCameraController m_CameraController;
 public:
     SpinLayer() 
         : Layer("Spin Test")
+        , m_CameraController(16.0f/9.0f, 1.0f)
     { }
     ~SpinLayer() { }
 
     void OnEvent(Event& event) override {
         EventDispacher dispacher(event);       
         dispacher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event){
-            m_MousePos = { event.GetX(), event.GetY() };
+            m_MousePos = { 
+                (event.GetX()/m_WindowSize.x * 2.0f - 1.0f) * m_CameraController.GetAspectRatio(), 
+                ((1.0f - event.GetY()/m_WindowSize.y) * 2.0f - 1.0f) * m_CameraController.GetZoomLevel()
+            };
             return false;
         });
-        dispacher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event){
-            if (event.GetKeyCode() == GLFW_KEY_F)
+        dispacher.Dispatch<MousePressedEvent>([this](MousePressedEvent& event){
+            if (event.GetMouseButton() == GLFW_MOUSE_BUTTON_LEFT)
                 m_MouseDown = true;
             return false;
         });
-        dispacher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent& event){
-            if (event.GetKeyCode() == GLFW_KEY_F)
+        dispacher.Dispatch<MousePressedEvent>([this](MousePressedEvent& event){
+            if (event.GetMouseButton() == GLFW_MOUSE_BUTTON_LEFT)
                 m_MouseDown = false;
             return false;
         });
+        dispacher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
+            m_WindowSize = { event.GetWidth(), event.GetHeight() };
+            return false;
+        });
+        m_CameraController.OnEvent(event);
     }
 
     void OnAttach() override {
-        m_WindowSize = { RenderCommand::GetData().WindowWidth, RenderCommand::GetData().WindowHeight };
+        RenderCommand::SetCamera(m_CameraController.GetCamera());
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
 
-        m_Manager[m_Test].position = m_WindowSize/2.0f;
-        m_Manager[m_Test].scale = glm::vec2(50);
+        m_Manager[m_Test].position = {0,0};
+        m_Manager[m_Test].scale = glm::vec2(0.05);
         m_Manager[m_Test].rotation = PI/4;
         m_Manager[m_Test].color = glm::vec4(0,0,0,0.6);
     }
@@ -107,14 +119,13 @@ public:
 
     bool spawn = true;
     void Update(float dt) override {
-        m_WindowSize = { RenderCommand::GetData().WindowWidth, RenderCommand::GetData().WindowHeight };
-        m_Manager[m_Test].position = glm::vec2(m_MousePos.x, m_WindowSize.y - m_MousePos.y);
+        m_Manager[m_Test].position = m_MousePos;
         m_Manager[m_Test].rotation += dt * 5;
 
         if (m_MouseDown)
-            m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(8.0f), dt * 10.0f);
+            m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
         else
-            m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(50.0f), dt * 10.0f);
+            m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.05f), dt * 10.0f);
     }
 
     void Render() override {
