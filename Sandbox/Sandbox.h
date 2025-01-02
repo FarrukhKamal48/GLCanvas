@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GLBox/Core/Input.h"
 #include <GLBox.h>
 
 #define PI glm::pi<float>()
@@ -61,7 +62,6 @@ private:
     unsigned int m_Test;
     glm::vec2 m_MousePos = { 0, 0 };
     glm::vec2 m_WindowSize = { 1920, 1080 };
-    bool m_KeyDown = false;
     OrthoCameraController m_CameraController;
 public:
     SpinLayer() 
@@ -74,19 +74,9 @@ public:
         EventDispacher dispacher(event);       
         dispacher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event){
             m_MousePos = { 
-                (event.GetX()/m_WindowSize.x * 2.0f - 1.0f) * m_CameraController.GetAspectRatio(), 
-                ((1.0f - event.GetY()/m_WindowSize.y) * 2.0f - 1.0f) * m_CameraController.GetZoomLevel()
+                (event.GetX()/m_WindowSize.x * 2.0f - 1.0f) * m_CameraController.GetBounds().x * 0.5f, 
+                ((1.0f - event.GetY()/m_WindowSize.y) * 2.0f - 1.0f) * m_CameraController.GetBounds().y * 0.5f 
             };
-            return false;
-        });
-        dispacher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event){
-            if (event.GetKeyCode() == GLFW_KEY_SPACE)
-                m_KeyDown = true;
-            return false;
-        });
-        dispacher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent& event){
-            if (event.GetKeyCode() == GLFW_KEY_SPACE)
-                m_KeyDown = false;
             return false;
         });
         dispacher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
@@ -115,7 +105,7 @@ public:
         m_Manager[m_Test].position = m_MousePos;
         m_Manager[m_Test].rotation += dt * 5;
 
-        if (m_KeyDown)
+        if (Input::MousePressed(Mouse::ButtonLeft))
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
         else
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.05f), dt * 10.0f);
