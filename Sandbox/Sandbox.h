@@ -1,13 +1,6 @@
 #pragma once
 
-#include <GLBox/Core/Application.h>
-#include <GLBox/Renderer/Renderer.h>
-#include <GLBox/Renderer/RendererInstanced.h>
-#include <GLBox/Renderer/CameraController.h>
-
-#include <GLBox/Events/KeyEvent.h>
-#include <GLBox/Events/WindowEvent.h>
-#include <GLBox/Events/MouseEvent.h>
+#include <GLBox.h>
 
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()
