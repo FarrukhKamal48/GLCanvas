@@ -1,93 +1,36 @@
 #pragma once
 
-#include "GLBox/Core/Input.h"
+#include <glbpch.h>
 #include <GLBox.h>
 
 #define PI glm::pi<float>()
 #define TwoPI 2 * glm::pi<float>()
 #define MAXSPEED (float)5
 
-class DynamicLayer : public Layer {
-private:
-    QuadTransform_Manager m_Manager;
-public:
-    DynamicLayer() 
-        : Layer("Dynamic Test")
-    { }
-    ~DynamicLayer() { }
-
-    void OnAttach() override {
-    }
-
-    void OnDetach() override {
-        
-    }
-
-    void Update(float dt) override {
-    }
-
-    void Render() override {
-    }
-
-    void ImGuiRender() override {
-        ImGui::ShowDemoWindow();
-        ImGui::Begin("Sim Controls");
-        static int inc = 0;
-        if (ImGui::Button("Spawn Square", ImVec2(100, 100))) {
-            unsigned int objI = m_Manager.AllocateObject(1, &ConfigureShader);
-            inc++;
-            m_Manager[objI].position = 
-                glm::vec2(inc * 0.01f * glm::sin(inc) + 0.005f, inc*0.01f);
-            m_Manager[objI].scale = glm::vec2(0.01f);
-            m_Manager[objI].rotation = inc*glm::sin(inc*20);
-            m_Manager[objI].color = glm::vec4(1, 0.5, 0, 1);
-        }
-        ImGui::End();
-    }
-private:
-    static void ConfigureShader(InstanceRenderer& renderer) {
-        renderer.CreateShader("GLBox/assets/shaders/instancing/RotationQuad.vert", 
-                              "GLBox/assets/shaders/instancing/RotationQuad.frag");
-    }
-
-    glm::vec2 Lerp(glm::vec2 a, glm::vec2 b, float p) {
-        return a + p * (b-a);
-    }
-};
-
-
 class SpinLayer : public Layer {
 private:
     QuadTransform_Manager m_Manager;
-    unsigned int m_Test;
-    glm::vec2 m_MousePos = { 0, 0 };
-    glm::vec2 m_WindowSize = { 1920, 1080 };
+    uint32_t m_Test;
+    
     OrthoCameraController m_CameraController;
+    FrameBuffer m_Framebuffer;
+    glm::vec2 m_ViewportSize = { 0, 0 };
+
+    glm::vec2 m_WishDir = { 0, 0 };
 public:
     SpinLayer() 
         : Layer("Spin Test")
         , m_CameraController(16.0f/9.0f, 1.0f)
+        , m_Framebuffer({ 1920, 1080, false })
     { }
     ~SpinLayer() { }
 
     void OnEvent(Event& event) override {
-        EventDispacher dispacher(event);       
-        dispacher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event){
-            m_MousePos = { 
-                (event.GetX()/m_WindowSize.x * 2.0f - 1.0f) * m_CameraController.GetBounds().x * 0.5f, 
-                ((1.0f - event.GetY()/m_WindowSize.y) * 2.0f - 1.0f) * m_CameraController.GetBounds().y * 0.5f 
-            };
-            return false;
-        });
-        dispacher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
-            m_WindowSize = { event.GetWidth(), event.GetHeight() };
-            return false;
-        });
-        m_CameraController.OnEvent(event);
     }
 
     void OnAttach() override {
         Renderer::SetCamera(m_CameraController.GetCamera());
+        
         m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
 
         m_Manager[m_Test].position = {0,0};
@@ -100,21 +43,51 @@ public:
         
     }
 
-    bool spawn = true;
     void Update(float dt) override {
-        m_Manager[m_Test].position = m_MousePos;
-        m_Manager[m_Test].rotation += dt * 5;
-
-        if (Input::MousePressed(Mouse::ButtonLeft))
+        if (Input::KeyPressed(Key::Space))
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
         else
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.05f), dt * 10.0f);
+        
+        if (Input::KeyPressed(Key::W))          m_WishDir.y = 1;
+        else if (Input::KeyPressed(Key::S))     m_WishDir.y = -1;
+        else                                    m_WishDir.y = 0;
+        
+        if (Input::KeyPressed(Key::D))          m_WishDir.x = 1;
+        else if (Input::KeyPressed(Key::A))     m_WishDir.x = -1;
+        else                                    m_WishDir.x = 0;
+
+        m_Manager[m_Test].position += m_WishDir * 2.0f * dt;
+        m_Manager[m_Test].rotation += 5 * dt;
+
     }
 
     void Render() override {
+        m_Framebuffer.Bind();
     }
 
     void ImGuiRender() override {
+        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
+        
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
+        ImGui::Begin("ViewPort"); {
+            ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+            if (m_ViewportSize != *((glm::vec2*)&viewportSize)) {
+                m_ViewportSize = { viewportSize.x, viewportSize.y };
+                m_Framebuffer.Resize(m_ViewportSize.x, m_ViewportSize.y);
+                m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+            }
+            ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
+
+        ImGui::Begin("Settings"); {
+            ImGui::Button("Hell");
+        }
+        ImGui::End();
+        
+        m_Framebuffer.UnBind();
     }
 private:
     static void ConfigureShader(InstanceRenderer& renderer) {
