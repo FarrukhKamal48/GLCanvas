@@ -17,7 +17,7 @@ private:
     glm::vec2 m_ViewportSize = { 0, 0 };
 
     glm::vec2 m_WishDir = { 0, 0 };
-    glm::vec2 m_DeltaMouse = { 0, 0};
+    glm::vec2 m_DeltaMouse = { 0, 0 };
 public:
     SpinLayer() 
         : Layer("Spin Test")
@@ -40,9 +40,6 @@ public:
         m_Manager[m_Test].scale = glm::vec2(0.05);
         m_Manager[m_Test].rotation = PI/4;
         m_Manager[m_Test].color = glm::vec4(0,0,0,0.6);
-    }
-
-    void OnDetach() override {
         
     }
 
@@ -59,6 +56,12 @@ public:
         if (Input::KeyPressed(Key::D))          m_WishDir.x = 1;
         else if (Input::KeyPressed(Key::A))     m_WishDir.x = -1;
         else                                    m_WishDir.x = 0;
+
+        m_DeltaMouse = Input::MouseDelta();
+
+        if (Input::MousePressed(Mouse::ButtonLeft)) {
+            m_CameraController.Translate(-glm::vec3(m_DeltaMouse.x, -m_DeltaMouse.y, 0.0f)/100.0f);
+        }
 
         m_Manager[m_Test].position += m_WishDir * 2.0f * dt;
         m_Manager[m_Test].rotation += 5 * dt;
