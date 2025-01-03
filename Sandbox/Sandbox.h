@@ -17,6 +17,7 @@ private:
     glm::vec2 m_ViewportSize = { 0, 0 };
 
     glm::vec2 m_WishDir = { 0, 0 };
+    glm::vec2 m_DeltaMouse = { 0, 0};
 public:
     SpinLayer() 
         : Layer("Spin Test")
@@ -26,12 +27,14 @@ public:
     ~SpinLayer() { }
 
     void OnEvent(Event& event) override {
+        EventDispacher dispacher(event);
+        m_CameraController.OnEvent(event);
     }
 
     void OnAttach() override {
         Renderer::SetCamera(m_CameraController.GetCamera());
         
-        m_Test = m_Manager.AllocateObject(1, &ConfigureShader);
+        m_Test = m_Manager.AllocateObject(1, BIND_FN(ConfigureShader));
 
         m_Manager[m_Test].position = {0,0};
         m_Manager[m_Test].scale = glm::vec2(0.05);
@@ -43,7 +46,7 @@ public:
         
     }
 
-    void Update(float dt) override {
+    void OnUpdate(float dt) override {
         if (Input::KeyPressed(Key::Space))
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
         else
@@ -62,11 +65,11 @@ public:
 
     }
 
-    void Render() override {
+    void OnRender() override {
         m_Framebuffer.Bind();
     }
 
-    void ImGuiRender() override {
+    void OnImGuiRender() override {
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
         
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
@@ -90,7 +93,7 @@ public:
         m_Framebuffer.UnBind();
     }
 private:
-    static void ConfigureShader(InstanceRenderer& renderer) {
+    void ConfigureShader(InstanceRenderer& renderer) {
         renderer.CreateShader("GLBox/assets/shaders/instancing/RotationQuad.vert", 
                               "GLBox/assets/shaders/instancing/RotationQuad.frag");
     }
