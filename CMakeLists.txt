@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.00...3.31)
-project(VTest VERSION 1.0
+project(GLCanvas VERSION 1.0
               LANGUAGES CXX)
 
 # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
@@ -8,7 +8,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set (CMAKE_BUILD_TYPE "Debug")
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set (src_dir "${PROJECT_SOURCE_DIR}/Sandbox")
+set (src_dir "${PROJECT_SOURCE_DIR}/GLCanvas")
 set (vendor_dir "${PROJECT_SOURCE_DIR}/vendor")
 set (glbox_dir "${PROJECT_SOURCE_DIR}/GLBox")
 
