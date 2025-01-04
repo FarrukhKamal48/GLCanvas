@@ -1,11 +1,11 @@
 #include <GLBox/Core/EntryPoint.h>
-#include "Sandbox.h"
+#include "GLCanvas/GLCanvasLayer.h"
 
 class MyApp : public Application {
 public:
     MyApp() : Application({ "GLBox", 960, 540 })
     {
-        PushLayer(new SpinLayer());
+        PushLayer(new MainLayer());
     }
     ~MyApp() { }
 };
