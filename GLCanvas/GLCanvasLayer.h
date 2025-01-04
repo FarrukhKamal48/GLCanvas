@@ -74,6 +74,8 @@ public:
         m_Manager[m_Test].position = glm::vec3(m_WorldMousePos, 0.0f);
         m_Manager[m_Test].rotation += 5 * dt;
 
+        m_ColorCard.SetMousePos(m_WorldMousePos);
+        m_ColorCard.SetMouseDelta(m_MouseDelta);
         m_ColorCard.OnUpdate(dt);
     }
 

@@ -29,5 +29,4 @@ private:
     
     ColorCardSpec m_Spec;
     bool m_IsDragged = false;
-    glm::vec2 m_WindowMousePos;
 };

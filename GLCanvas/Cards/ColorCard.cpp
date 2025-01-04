@@ -9,14 +9,15 @@ ColorCard::ColorCard(const ColorCardSpec& spec) : m_Spec(spec) {
 void ColorCard::OnEvent(Event& event) {
     EventDispacher dispacher(event);
     dispacher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event) {
-        m_IsDragged = Input::MousePressed(Mouse::ButtonLeft);
+        m_IsDragged = Input::MousePressed(Mouse::ButtonLeft) && 
+            IsHovered(m_Spec.Position - m_Spec.Scale, m_Spec.Position + m_Spec.Scale, m_WorldMousePos);
         return false;
     });
 }
 
 void ColorCard::OnUpdate(float dt) {
     if (m_IsDragged) {
-        m_Spec.Position += Input::MouseDelta() * 0.0001f;
+        m_Spec.Position += m_WorldMouseDelta;
         m_Manager[m_ColorRectI].position = glm::vec3(m_Spec.Position, 0);
         m_Manager[m_TitleRectI].position = 
             glm::vec3(m_Spec.Position.x, m_Spec.Position.y - m_Spec.Scale.y * m_Spec.TitlePercent, 0);
