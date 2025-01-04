@@ -16,9 +16,9 @@ private:
     FrameBuffer m_Framebuffer;
     glm::vec2 m_ViewportSize = { 0, 0 };
 
-    glm::vec2 m_WishDir = { 0, 0 };
     glm::vec2 m_MouseDelta = { 0, 0 };
-    glm::vec2 m_MousePos = { 0, 0 };
+    glm::vec2 m_WindowMousePos = { 0, 0 };
+    glm::vec2 m_WorldMousePos = { 0, 0 };
 public:
     SpinLayer() 
         : Layer("Spin Test")
@@ -35,7 +35,13 @@ public:
     void OnAttach() override {
         Renderer::SetCamera(m_CameraController.GetCamera());
         
-        m_Test = m_Manager.AllocateObject(2, BIND_FN(ConfigureShader));
+        m_Test = m_Manager.AllocateObject(10, BIND_FN(ConfigureShader));
+        for (int i = 1; i < 10; i++) {
+            m_Manager[m_Test+i].position = glm::vec2(glm::cos(i), glm::sin(i));
+            m_Manager[m_Test+i].scale = glm::vec2(0.05);
+            m_Manager[m_Test+i].rotation = PI/4;
+            m_Manager[m_Test+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1);
+        }
 
         m_Manager[m_Test].position = {0,0};
         m_Manager[m_Test].scale = glm::vec2(0.05);
@@ -50,24 +56,17 @@ public:
         else
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.05f), dt * 10.0f);
         
-        // if (Input::KeyPressed(Key::W))          m_WishDir.y = 1;
-        // else if (Input::KeyPressed(Key::S))     m_WishDir.y = -1;
-        // else                                    m_WishDir.y = 0;
-        // 
-        // if (Input::KeyPressed(Key::D))          m_WishDir.x = 1;
-        // else if (Input::KeyPressed(Key::A))     m_WishDir.x = -1;
-        // else                                    m_WishDir.x = 0;
-        //
-        // m_CameraController.Translate(glm::vec3(m_WishDir.x, m_WishDir.y, 0.0f) * 2.0f * dt);
+        static glm::vec2 lastPos = { 0, 0 };
+        m_MouseDelta = m_WindowMousePos - lastPos;
+        lastPos = m_WindowMousePos;
+
+        m_WorldMousePos = m_WindowMousePos + glm::vec2(m_CameraController.GetCamera().GetPosition());
         
-        // m_Manager[m_Test].position += m_WishDir * 2.0f * dt;
-        m_Manager[m_Test].position = m_MousePos;
+        if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
+            m_CameraController.Translate(-glm::vec3(m_MouseDelta, 0.0f));
+        
+        m_Manager[m_Test].position = m_WorldMousePos;
         m_Manager[m_Test].rotation += 5 * dt;
-
-        // static glm::vec2 lastPos = { 0, 0 };
-        // m_MouseDelta = m_MousePos - lastPos;
-        // lastPos = m_MousePos;
-
     }
 
     void OnRender() override {
@@ -88,14 +87,14 @@ public:
             ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
                 
             {
-                ImVec2 mousePos = { 
+                m_WindowMousePos = { 
                     ImGui::GetMousePos().x - ImGui::GetWindowPos().x, 
                     ImGui::GetMousePos().y - ImGui::GetWindowPos().y 
                 };
-                m_MousePos = {
-                    (mousePos.x/m_ViewportSize.x - 0.5f) * m_CameraController.GetBounds().x,
-                    (1.0f - mousePos.y/m_ViewportSize.y - 0.5f) * m_CameraController.GetBounds().y,
-                };
+                m_WindowMousePos = glm::vec2(
+                    (m_WindowMousePos.x/m_ViewportSize.x - 0.5f) * m_CameraController.GetBounds().x,
+                    (1.0f - m_WindowMousePos.y/m_ViewportSize.y - 0.5f) * m_CameraController.GetBounds().y
+                );
             }
         }
         ImGui::End();
