@@ -73,30 +73,43 @@ public:
         m_Framebuffer.Bind();
     }
  
+    ImVec2 drawpos = { 0, 0 };
     void OnImGuiRender() override {
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
         
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
-        ImGui::Begin("ViewPort"); {
-            ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-            if (m_ViewportSize != *((glm::vec2*)&viewportSize)) {
-                m_ViewportSize = { viewportSize.x, viewportSize.y };
-                m_Framebuffer.Resize(m_ViewportSize.x, m_ViewportSize.y);
-                m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-            }
-            ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
-                
-            {
-                m_WindowMousePos = { 
-                    ImGui::GetMousePos().x - ImGui::GetWindowPos().x, 
-                    ImGui::GetMousePos().y - ImGui::GetWindowPos().y 
-                };
-                m_WindowMousePos = glm::vec2(
-                    (m_WindowMousePos.x/m_ViewportSize.x - 0.5f) * m_CameraController.GetBounds().x,
-                    (1.0f - m_WindowMousePos.y/m_ViewportSize.y - 0.5f) * m_CameraController.GetBounds().y
-                );
-            }
+        ImGui::Begin("ViewPort");
+        ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+        if (m_ViewportSize != *((glm::vec2*)&viewportSize)) {
+            m_ViewportSize = { viewportSize.x, viewportSize.y };
+            m_Framebuffer.Resize(m_ViewportSize.x, m_ViewportSize.y);
+            m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
         }
+        ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
+        
+        ImVec2 wishdir = { 0, 0 };
+        if (Input::KeyPressed(Key::W))      wishdir.y = -1;
+        else if (Input::KeyPressed(Key::S)) wishdir.y = 1;
+        else                                wishdir.y = 0;
+
+        if (Input::KeyPressed(Key::D))      wishdir.x = 1;
+        else if (Input::KeyPressed(Key::A)) wishdir.x = -1;
+        else                                wishdir.x = 0;
+
+        drawpos.x += wishdir.x * 10.0f;
+        drawpos.y += wishdir.y * 10.0f;
+
+        ImGui::GetWindowDrawList()->AddCircleFilled(drawpos, 10.0f, IM_COL32_WHITE);
+            
+        m_WindowMousePos = { 
+            ImGui::GetMousePos().x - ImGui::GetWindowPos().x, 
+            ImGui::GetMousePos().y - ImGui::GetWindowPos().y 
+        };
+        m_WindowMousePos = glm::vec2(
+            (m_WindowMousePos.x/m_ViewportSize.x - 0.5f) * m_CameraController.GetBounds().x,
+            (1.0f - m_WindowMousePos.y/m_ViewportSize.y - 0.5f) * m_CameraController.GetBounds().y
+        );
+            
         ImGui::End();
         ImGui::PopStyleVar();
 
