@@ -3,7 +3,7 @@
 #include <glbpch.h>
 #include <GLBox.h>
 
-#include "Cards/ColorCard.h"
+#include "GLCanvas/Cards/ColorCard.h"
 
 #define PI glm::pi<float>()
 
