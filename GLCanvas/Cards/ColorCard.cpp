@@ -18,10 +18,12 @@ void ColorCard::OnEvent(Event& event) {
 void ColorCard::OnUpdate(float dt) {
     if (m_IsDragged) {
         m_Spec.Position += m_WorldMouseDelta;
-        m_Manager[m_ColorRectI].position = glm::vec3(m_Spec.Position, 0);
-        m_Manager[m_TitleRectI].position = 
-            glm::vec3(m_Spec.Position.x, m_Spec.Position.y - m_Spec.Scale.y * m_Spec.TitlePercent, 0);
+        ColorCard::UpdateData();
     }
+}
+
+void ColorCard::OnImGuiRender() {
+    // ImGui::GetWindowDrawList()->AddCircleFilled(drawpos, 10.0f, IM_COL32_WHITE);
 }
 
 void ColorCard::UpdateData() {

@@ -15,6 +15,7 @@ public:
 
     void OnEvent(Event& event) override;
     void OnUpdate(float dt) override;
+    void OnImGuiRender() override;
     
     void SetSpec(const ColorCardSpec& spec) { m_Spec = spec; UpdateData(); }
     ColorCardSpec& GetSpec() { return m_Spec; }
