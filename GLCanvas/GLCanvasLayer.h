@@ -104,7 +104,7 @@ public:
             
             m_WindowMousePos = { 
                 ImGui::GetMousePos().x - ImGui::GetWindowPos().x, 
-                ImGui::GetMousePos().y - ImGui::GetWindowPos().y 
+                ImGui::GetMousePos().y - ImGui::GetWindowPos().y - (ImGui::GetWindowHeight() - viewportSize.y) // excluding height of titlebar
             };
             
             m_ColorCard.OnImGuiRender();
