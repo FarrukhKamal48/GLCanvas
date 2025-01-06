@@ -4,6 +4,7 @@
 #include <GLBox.h>
 
 #include "GLCanvas/Cards/ColorCard.h"
+#include "GLCanvas/ImVec2Extend.h"
 
 #define PI glm::pi<float>()
 
@@ -19,8 +20,8 @@ private:
     glm::vec2 m_ViewportSize = { 0, 0 };
 
     glm::vec2 m_MouseDelta = { 0, 0 };
-    glm::vec2 m_WindowMousePos = { 0, 0 };
     glm::vec2 m_WorldMousePos = { 0, 0 };
+    ImVec2 m_WindowMousePos = { 0, 0 };
 
     ColorCard m_ColorCard;
 public:
@@ -57,15 +58,15 @@ public:
     }
 
     void OnUpdate(float dt) override {
-        // take windowMousePos and convert to coords in camera space and then translate my camera's position
+        // take windowMousePos and convert to coords in camera space (fliping y values) and then translate my camera's position
         m_WorldMousePos = glm::vec2(
             (m_WindowMousePos.x/m_ViewportSize.x - 0.5f) * m_CameraController.GetBounds().x,
             (1.0f - m_WindowMousePos.y/m_ViewportSize.y - 0.5f) * m_CameraController.GetBounds().y
         ) + glm::vec2(m_CameraController.GetCamera().GetPosition());
         
         static glm::vec2 lastPos = { 0, 0 };
-        m_MouseDelta = m_WorldMousePos - lastPos;
-        lastPos = m_WorldMousePos;
+        m_MouseDelta = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
+        lastPos = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition());
         
         m_Manager[m_Test].position = glm::vec3(m_WorldMousePos, 0.0f);
         m_Manager[m_Test].rotation += 5 * dt;
@@ -102,10 +103,8 @@ public:
             }
             ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
             
-            m_WindowMousePos = { 
-                ImGui::GetMousePos().x - ImGui::GetWindowPos().x, 
-                ImGui::GetMousePos().y - ImGui::GetWindowPos().y - (ImGui::GetWindowHeight() - viewportSize.y) // excluding height of titlebar
-            };
+            m_WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
+                - ImVec2(0, ImGui::GetWindowHeight() - viewportSize.y);
             
             m_ColorCard.OnImGuiRender();
         }
