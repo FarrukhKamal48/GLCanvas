@@ -17,8 +17,8 @@ private:
     
     OrthoCameraController m_CameraController;
     FrameBuffer m_Framebuffer;
+    
     glm::vec2 m_ViewportSize = { 0, 0 };
-
     glm::vec2 m_MouseDelta = { 0, 0 };
     glm::vec2 m_WorldMousePos = { 0, 0 };
     ImVec2 m_WindowMousePos = { 0, 0 };
@@ -60,9 +60,9 @@ public:
     void OnUpdate(float dt) override {
         // take windowMousePos and convert to coords in camera space (fliping y values) and then translate my camera's position
         m_WorldMousePos = glm::vec2(
-            (m_WindowMousePos.x/m_ViewportSize.x - 0.5f) * m_CameraController.GetBounds().x,
-            (1.0f - m_WindowMousePos.y/m_ViewportSize.y - 0.5f) * m_CameraController.GetBounds().y
-        ) + glm::vec2(m_CameraController.GetCamera().GetPosition());
+            m_WindowMousePos.x/m_ViewportSize.x - 0.5f,
+            1.0f - m_WindowMousePos.y/m_ViewportSize.y - 0.5f
+        ) * m_CameraController.GetBounds() + glm::vec2(m_CameraController.GetCamera().GetPosition());
         
         static glm::vec2 lastPos = { 0, 0 };
         m_MouseDelta = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
@@ -105,6 +105,14 @@ public:
             
             m_WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
                 - ImVec2(0, ImGui::GetWindowHeight() - viewportSize.y);
+                
+            ImVec2 drawPos = glm::vec2(
+                0.5f + m_WorldMousePos.x/m_CameraController.GetBounds().x,
+                0.5f - m_WorldMousePos.y/m_CameraController.GetBounds().y
+            ) * m_ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - viewportSize.y);
+            
+            BASIC_LOG(drawPos.x, drawPos.y);
+            ImGui::GetWindowDrawList()->AddCircleFilled(drawPos, 10.0f, IM_COL32_WHITE);
             
             m_ColorCard.OnImGuiRender();
         }
