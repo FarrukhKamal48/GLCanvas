@@ -10,7 +10,7 @@ struct ColorCardSpec {
 
 class ColorCard : public Card {
 public:    
-    ColorCard(const ColorCardSpec& spec);
+    ColorCard(CanvasData& data, const ColorCardSpec& spec);
     ~ColorCard() {}
 
     void OnEvent(Event& event) override;

@@ -18,3 +18,7 @@ inline ImVec2 operator*(TpA A, TpB B) { return ImVec2(A.x*B.y, A.y*B.y); }
 
 template<typename TpA, typename TpB>
 inline ImVec2 operator/(TpA A, TpB B) { return ImVec2(A.x/B.x, A.y/B.y); }
+
+template<typename TpA, typename TpB>
+inline bool operator!=(TpA A, TpB B) { return A.x!=B.x || A.y!=B.y; }
+

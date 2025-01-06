@@ -1,6 +1,6 @@
 #include "GLCanvas/Cards/ColorCard.h"
 
-ColorCard::ColorCard(const ColorCardSpec& spec) : m_Spec(spec) {
+ColorCard::ColorCard(CanvasData& data, const ColorCardSpec& spec) : Card(data), m_Spec(spec) {
     m_ColorRectI = m_Manager.AllocateObject(2, BIND_FN(ConfigureShader));
     m_TitleRectI = m_ColorRectI + 1;
     UpdateData();   
@@ -10,20 +10,20 @@ void ColorCard::OnEvent(Event& event) {
     EventDispacher dispacher(event);
     dispacher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event) {
         m_IsDragged = Input::MousePressed(Mouse::ButtonLeft) && 
-            IsHovered(m_Spec.Position - m_Spec.Scale, m_Spec.Position + m_Spec.Scale, m_WorldMousePos);
+            IsHovered(m_Spec.Position - m_Spec.Scale, m_Spec.Position + m_Spec.Scale, m_CanvasData.WorldMousePos);
         return false;
     });
 }
 
 void ColorCard::OnUpdate(float dt) {
     if (m_IsDragged) {
-        m_Spec.Position += m_WorldMouseDelta;
+        m_Spec.Position += m_CanvasData.WorldMouseDelta;
         ColorCard::UpdateData();
     }
 }
 
 void ColorCard::OnImGuiRender() {
-    // ImGui::GetWindowDrawList()->AddCircleFilled(drawpos, 10.0f, IM_COL32_WHITE);
+    ImGui::GetWindowDrawList()->AddText(WorldToScreen(m_Spec.Position, m_CanvasData), IM_COL32(255, 255, 0, 255), "Color Card Red");
 }
 
 void ColorCard::UpdateData() {
