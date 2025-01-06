@@ -23,7 +23,10 @@ void ColorCard::OnUpdate(float dt) {
 }
 
 void ColorCard::OnImGuiRender() {
-    ImGui::GetWindowDrawList()->AddText(WorldToScreen(m_Spec.Position, m_CanvasData), IM_COL32(255, 255, 0, 255), "Color Card Red");
+    ImGui::GetWindowDrawList()->AddText(
+        WorldToScreen(m_Spec.Position - glm::vec2(m_Spec.Scale.x/2, m_Spec.Scale.y/2), m_CanvasData), 
+        IM_COL32(255, 255, 0, 255), "Color Card Red"
+    );
 }
 
 void ColorCard::UpdateData() {
