@@ -31,14 +31,15 @@ void ColorCard::OnImGuiRender() {
 
 void ColorCard::UpdateData() {
     m_Manager[m_ColorRectI].color = m_Spec.Color;
-    m_Manager[m_ColorRectI].scale = m_Spec.Scale;
-    m_Manager[m_ColorRectI].position = glm::vec3(m_Spec.Position, 0);
+    m_Manager[m_ColorRectI].scale = glm::vec2(m_Spec.Scale.x, m_Spec.Scale.y * (1.0f-m_Spec.TitlePercent));
+    m_Manager[m_ColorRectI].position = 
+        glm::vec3(m_Spec.Position.x, m_Spec.Position.y + m_Spec.Scale.y * (1.0f-m_Spec.TitlePercent), -0.9f);
     m_Manager[m_ColorRectI].rotation = 0;
     
     m_Manager[m_TitleRectI].color = { 0.1f, 0.1f, 0.1f, 1.0f };
     m_Manager[m_TitleRectI].scale = glm::vec2(m_Spec.Scale.x, m_Spec.Scale.y * m_Spec.TitlePercent);
     m_Manager[m_TitleRectI].position = 
-        glm::vec3(m_Spec.Position.x, m_Spec.Position.y - m_Spec.Scale.y * m_Spec.TitlePercent, 0);
+        glm::vec3(m_Spec.Position.x, m_Spec.Position.y - m_Spec.Scale.y * m_Spec.TitlePercent, -0.9f);
     m_Manager[m_TitleRectI].rotation = 0;
 }
 

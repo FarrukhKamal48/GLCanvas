@@ -40,13 +40,13 @@ public:
         
         m_Test = m_Manager.AllocateObject(10, BIND_FN(ConfigureShader));
         for (int i = 0; i < 10; i++) {
-            m_Manager[m_Test+i].position = glm::vec3(glm::cos(i), glm::sin(i), 0.0f);
+            m_Manager[m_Test+i].position = glm::vec3(glm::cos(i), glm::sin(i), -1);
             m_Manager[m_Test+i].scale = glm::vec2(0.05);
             m_Manager[m_Test+i].rotation = PI/4;
             m_Manager[m_Test+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1.0f);
         }
 
-        m_Manager[m_Test].position = {0,0,0};
+        m_Manager[m_Test].position = {0,0,1};
         m_Manager[m_Test].scale = glm::vec2(0.05);
         m_Manager[m_Test].rotation = PI/4;
         m_Manager[m_Test].color = glm::vec4(0,0,0,1);
