@@ -3,103 +3,51 @@
 #include <glbpch.h>
 #include <GLBox.h>
 
-#include "GLCanvas/Cards/ColorCard.h"
-#include "GLCanvas/ImVec2Extend.h"
-
-#define PI glm::pi<float>()
+#include "GLCanvas/Canvas/Canvas.h"
 
 class MainLayer : public Layer {
 private:
-    QuadTransform_Manager m_Manager;
-    uint32_t m_Test;
-    
-    OrthoCameraController m_CameraController;
     FrameBuffer m_Framebuffer;
-    
-    CanvasData m_Data;
-
-    ColorCard m_ColorCard;
+    Canvas m_Canvas;
 public:
     MainLayer() 
         : Layer("Spin Test")
-        , m_CameraController(16.0f/9.0f, 1.0f)
         , m_Framebuffer({ 1920, 1080, false })
-        , m_Data(m_CameraController.GetBounds())
-        , m_ColorCard(m_Data, {glm::vec2(0), glm::vec4(1,0,0,1), glm::vec2(0.2f, 0.2f ), 0.5f})
     { }
     ~MainLayer() { }
 
     void OnEvent(Event& event) override {
         EventDispacher dispacher(event);
-        m_CameraController.OnEvent(event);
-        m_ColorCard.OnEvent(event);
+        m_Canvas.OnEvent(event);
     }
 
     void OnAttach() override {
-        Renderer::SetCamera(m_CameraController.GetCamera());
-        
-        m_Test = m_Manager.AllocateObject(10, BIND_FN(ConfigureShader));
-        for (int i = 0; i < 10; i++) {
-            m_Manager[m_Test+i].position = glm::vec3(glm::cos(i), glm::sin(i), -1);
-            m_Manager[m_Test+i].scale = glm::vec2(0.05);
-            m_Manager[m_Test+i].rotation = PI/4;
-            m_Manager[m_Test+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1.0f);
-        }
-
-        m_Manager[m_Test].position = {0,0,1};
-        m_Manager[m_Test].scale = glm::vec2(0.05);
-        m_Manager[m_Test].rotation = PI/4;
-        m_Manager[m_Test].color = glm::vec4(0,0,0,1);
+        Renderer::SetCamera(m_Canvas.GetCameraController().GetCamera());
+        m_Canvas.OnAttach();
     }
 
     void OnUpdate(float dt) override {
-        if (Input::KeyPressed(Key::Space))
-            m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
-        else
-            m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.05f), dt * 10.0f);
-        
-        if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
-            m_CameraController.Translate(-glm::vec3(m_Data.WorldMouseDelta, 0.0f));
-
-        // take windowMousePos and convert to coords in camera space (fliping y values) and then translate my camera's position
-        m_Data.WorldMousePos = glm::vec2(
-            m_Data.WindowMousePos.x/m_Data.ViewportSize.x - 0.5f,
-            1.0f - m_Data.WindowMousePos.y/m_Data.ViewportSize.y - 0.5f
-        ) * m_CameraController.GetBounds() + glm::vec2(m_CameraController.GetCamera().GetPosition());
-
-        static glm::vec2 lastPos = { 0, 0 };
-        m_Data.WorldMouseDelta = m_Data.WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
-        lastPos = m_Data.WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition());
-
-        m_Manager[m_Test].position = glm::vec3(m_Data.WorldMousePos, 0.0f);
-        m_Manager[m_Test].rotation += 5 * dt;
-
-        m_ColorCard.OnUpdate(dt);
+        m_Canvas.OnUpdate(dt);
     }
 
     void OnRender() override {
         m_Framebuffer.Bind();
-        m_ColorCard.OnRender();
     }
  
     void OnImGuiRender() override {
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
         
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
-        ImGui::Begin("ViewPort");
+        ImGui::Begin("Canvas");
         {
             ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-            if (m_Data.ViewportSize != viewportSize) {
-                m_Data.ViewportSize = { viewportSize.x, viewportSize.y };
-                m_Framebuffer.Resize(m_Data.ViewportSize.x, m_Data.ViewportSize.y);
-                m_CameraController.OnResize(m_Data.ViewportSize.x, m_Data.ViewportSize.y);
+            if (m_Canvas.GetViewportSize() != viewportSize) {
+                m_Canvas.OnViewportResize({ viewportSize.x, viewportSize.y });
+                m_Framebuffer.Resize(viewportSize.x, viewportSize.y);
             }
             ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
-            
-            m_Data.WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
-                - ImVec2(0, ImGui::GetWindowHeight() - viewportSize.y);
-                
-            m_ColorCard.OnImGuiRender();
+
+            m_Canvas.OnImGuiRender();
         }
         ImGui::End();
         ImGui::PopStyleVar();
