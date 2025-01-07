@@ -1,3 +1,4 @@
+#include "GLCanvas/ImVec2Extend.h"
 #include "GLCanvas/Canvas/Canvas.h"
 
 #define PI glm::pi<float>()
@@ -55,6 +56,14 @@ void Canvas::OnUpdate(float dt) {
 void Canvas::OnImGuiRender() {
     m_WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
         - ImVec2(0, ImGui::GetWindowHeight() - m_ViewportSize.y);
+    
+    ImGui::GetWindowDrawList()->AddCircleFilled(
+        WorldToScreen(m_WorldMousePos), 
+        10 / m_CameraController.GetZoomLevel(), 
+        IM_COL32(255, 255, 0, 255)
+    );
+
+    m_CardManager.OnImGuiRender();
 }
 
 void Canvas::OnViewportResize(glm::vec2 size) {
@@ -72,7 +81,7 @@ glm::vec2 Canvas::ScreenToWorld(ImVec2 screenCoords) {
 
 ImVec2 Canvas::WorldToScreen(glm::vec2 worldCoords) {
     return glm::vec2(
-        0.5f + worldCoords.x/m_CameraController.GetBounds().x,
-        0.5f - worldCoords.y/m_CameraController.GetBounds().y
+        0.5f + (worldCoords.x - m_CameraController.GetCamera().GetPosition().x)/m_CameraController.GetBounds().x,
+        0.5f - (worldCoords.y - m_CameraController.GetCamera().GetPosition().y)/m_CameraController.GetBounds().y
     ) * m_ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - m_ViewportSize.y);
 }

@@ -4,13 +4,6 @@
 
 #include "GLCanvas/Cards/CardManager.h"
 
-enum class CanvasState {
-    Idle,
-    Panning,
-    Zooming,
-    Dragging
-};
-
 
 class Canvas {
 public:    
@@ -33,7 +26,6 @@ public:
 
 private:
     OrthoCameraController m_CameraController;
-    CanvasState m_CurrentState = CanvasState::Idle;
     
     CardManager m_CardManager;
     

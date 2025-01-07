@@ -23,6 +23,17 @@ public:
         }
     }
 
+    void OnImGuiRender() {
+        for (Card* card : m_Cards) {
+            card->OnImGuiRender();
+        }
+    }
+    
+    static bool IsHovered(glm::vec2 bottomleft, glm::vec2 topright, glm::vec2 mouse) { 
+        return mouse.x >= bottomleft.x && mouse.x <= topright.x && 
+               mouse.y >= bottomleft.y && mouse.y <= topright.y;
+    }
+
 private:   
     std::vector<Card*> m_Cards;
 };

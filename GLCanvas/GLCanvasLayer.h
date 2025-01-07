@@ -3,6 +3,7 @@
 #include <glbpch.h>
 #include <GLBox.h>
 
+#include "GLCanvas/ImVec2Extend.h"
 #include "GLCanvas/Canvas/Canvas.h"
 
 class MainLayer : public Layer {
@@ -59,14 +60,5 @@ public:
         ImGui::End();
         
         m_Framebuffer.UnBind();
-    }
-private:
-    void ConfigureShader(InstanceRenderer& renderer) {
-        renderer.CreateShader("GLBox/assets/shaders/instancing/RotationQuad.vert", 
-                              "GLBox/assets/shaders/instancing/RotationQuad.frag");
-    }
-
-    glm::vec2 Lerp(glm::vec2 a, glm::vec2 b, float p) {
-        return a + p * (b-a);
     }
 };
