@@ -53,19 +53,6 @@ public:
     }
 
     void OnUpdate(float dt) override {
-        // take windowMousePos and convert to coords in camera space (fliping y values) and then translate my camera's position
-        m_Data.WorldMousePos = glm::vec2(
-            m_Data.WindowMousePos.x/m_Data.ViewportSize.x - 0.5f,
-            1.0f - m_Data.WindowMousePos.y/m_Data.ViewportSize.y - 0.5f
-        ) * m_CameraController.GetBounds() + glm::vec2(m_CameraController.GetCamera().GetPosition());
-        
-        static glm::vec2 lastPos = { 0, 0 };
-        m_Data.WorldMouseDelta = m_Data.WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
-        lastPos = m_Data.WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition());
-        
-        m_Manager[m_Test].position = glm::vec3(m_Data.WorldMousePos, 0.0f);
-        m_Manager[m_Test].rotation += 5 * dt;
-
         if (Input::KeyPressed(Key::Space))
             m_Manager[m_Test].scale = Lerp(m_Manager[m_Test].scale, glm::vec2(0.01f), dt * 10.0f);
         else
@@ -73,6 +60,19 @@ public:
         
         if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
             m_CameraController.Translate(-glm::vec3(m_Data.WorldMouseDelta, 0.0f));
+
+        // take windowMousePos and convert to coords in camera space (fliping y values) and then translate my camera's position
+        m_Data.WorldMousePos = glm::vec2(
+            m_Data.WindowMousePos.x/m_Data.ViewportSize.x - 0.5f,
+            1.0f - m_Data.WindowMousePos.y/m_Data.ViewportSize.y - 0.5f
+        ) * m_CameraController.GetBounds() + glm::vec2(m_CameraController.GetCamera().GetPosition());
+
+        static glm::vec2 lastPos = { 0, 0 };
+        m_Data.WorldMouseDelta = m_Data.WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
+        lastPos = m_Data.WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition());
+
+        m_Manager[m_Test].position = glm::vec3(m_Data.WorldMousePos, 0.0f);
+        m_Manager[m_Test].rotation += 5 * dt;
 
         m_ColorCard.OnUpdate(dt);
     }
