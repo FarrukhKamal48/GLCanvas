@@ -1,24 +1,32 @@
 #pragma once
 #include <GLBox.h>
 
-template<typename TpA, typename TpB>
-inline ImVec2 operator+(TpA A, TpB B) { return ImVec2(A.x+B.x, A.y+B.y); }
+inline bool operator!=(ImVec2 A, glm::vec2 B) { return A.x!=B.x || A.y!=B.y; }
+inline bool operator!=(glm::vec2 A, ImVec2 B) { return A.x!=B.x || A.y!=B.y; }
+inline bool operator!=(ImVec2 A, ImVec2 B) { return A.x!=B.x || A.y!=B.y; }
 
-template<typename TpA, typename TpB>
-inline ImVec2 operator-(TpA A, TpB B) { return ImVec2(A.x-B.x, A.y-B.y); } 
+// inline ImVec2 operator+(glm::vec2 A, glm::vec2 B) { return {A.x+B.x, A.y+B.y}; }
+inline ImVec2 operator+(ImVec2 A, glm::vec2 B) { return {A.x+B.x, A.y+B.y}; }
+inline ImVec2 operator+(glm::vec2 A, ImVec2 B) { return {A.x+B.x, A.y+B.y}; }
+inline ImVec2 operator+(ImVec2 A, ImVec2 B) { return {A.x+B.x, A.y+B.y}; }
 
-template<typename T>
-inline ImVec2 operator*(T vec, float val) { return ImVec2(vec.x*val, vec.y*val); }
+// inline ImVec2 operator-(glm::vec2 A, glm::vec2 B) { return {A.x-B.x, A.y-B.y}; }
+inline ImVec2 operator-(ImVec2 A, glm::vec2 B) { return {A.x-B.x, A.y-B.y}; }
+inline ImVec2 operator-(glm::vec2 A, ImVec2 B) { return {A.x-B.x, A.y-B.y}; }
+inline ImVec2 operator-(ImVec2 A, ImVec2 B) { return {A.x-B.x, A.y-B.y}; }
 
-template<typename T>
-inline ImVec2 operator/(T vec, float val) { return ImVec2(vec.x/val, vec.y/val); }
+// inline ImVec2 operator*(glm::vec2 A, glm::vec2 B) { return {A.x*B.x, A.y*B.y}; }
+inline ImVec2 operator*(ImVec2 A, glm::vec2 B) { return {A.x*B.x, A.y*B.y}; }
+inline ImVec2 operator*(glm::vec2 A, ImVec2 B) { return {A.x*B.x, A.y*B.y}; }
+inline ImVec2 operator*(ImVec2 A, ImVec2 B) { return {A.x*B.x, A.y*B.y}; }
 
-template<typename TpA, typename TpB>
-inline ImVec2 operator*(TpA A, TpB B) { return ImVec2(A.x*B.y, A.y*B.y); }
+// inline ImVec2 operator/(glm::vec2 A, glm::vec2 B) { return {A.x/B.x, A.y/B.y}; }
+inline ImVec2 operator/(ImVec2 A, glm::vec2 B) { return {A.x/B.x, A.y/B.y}; }
+inline ImVec2 operator/(glm::vec2 A, ImVec2 B) { return {A.x/B.x, A.y/B.y}; }
+inline ImVec2 operator/(ImVec2 A, ImVec2 B) { return {A.x/B.x, A.y/B.y}; }
 
-template<typename TpA, typename TpB>
-inline ImVec2 operator/(TpA A, TpB B) { return ImVec2(A.x/B.x, A.y/B.y); }
+inline ImVec2 operator*(ImVec2 A, float val) { return {A.x*val, A.y*val}; }
+inline ImVec2 operator*(ImVec2 A, int val) { return {A.x*val, A.y*val}; }
 
-template<typename TpA, typename TpB>
-inline bool operator!=(TpA A, TpB B) { return A.x!=B.x || A.y!=B.y; }
-
+inline ImVec2 operator/(ImVec2 A, float val) { return {A.x/val, A.y/val}; }
+inline ImVec2 operator/(ImVec2 A, int val) { return {A.x/val, A.y/val}; }
