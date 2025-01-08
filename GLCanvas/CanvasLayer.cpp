@@ -1,9 +1,9 @@
-#include "GLCanvas/GLCanvasLayer.h"
+#include "GLCanvas/CanvasLayer.h"
 #include "GLCanvas/ImVec2Extend.h"
 
 #define PI glm::pi<float>()
 
-MainLayer::MainLayer() 
+CanvasLayer::CanvasLayer() 
     : Layer("Canvas Layer")
     , m_CameraController(16.0f/9.0f, 1.0f) 
 {
@@ -13,14 +13,14 @@ MainLayer::MainLayer()
     spec.Attachments = { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 };
     m_Framebuffer = FrameBuffer(spec);
 }
-MainLayer::~MainLayer() { }
+CanvasLayer::~CanvasLayer() { }
 
-void MainLayer::OnEvent(Event& event) {
+void CanvasLayer::OnEvent(Event& event) {
     EventDispacher dispacher(event);
     m_CameraController.OnEvent(event);
 }
 
-void MainLayer::OnAttach() {
+void CanvasLayer::OnAttach() {
     Renderer::SetCamera(m_CameraController.GetCamera());
     m_BackgroundI = m_Manager.AllocateObject(10, [](InstanceRenderer& renderer) {
         renderer.CreateShader("Assets/Shaders/ColorQuad.vert", 
@@ -40,7 +40,7 @@ void MainLayer::OnAttach() {
     m_Manager[m_BackgroundI].color = glm::vec4(0,0,0,1);
 }
 
-void MainLayer::OnUpdate(float dt) {
+void CanvasLayer::OnUpdate(float dt) {
     
     if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
         m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
@@ -60,13 +60,13 @@ void MainLayer::OnUpdate(float dt) {
     m_Manager[m_BackgroundI].rotation += 5 * dt;
 }
 
-void MainLayer::OnRender() {
+void CanvasLayer::OnRender() {
     m_Framebuffer.Bind();
     Renderer::Clear(0.9, 0.9, 0.9, 1);
     m_Framebuffer.ClearAttachment(1, -1);
 }
 
-void MainLayer::OnImGuiRender() {
+void CanvasLayer::OnImGuiRender() {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
     
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
@@ -108,18 +108,18 @@ void MainLayer::OnImGuiRender() {
     m_Framebuffer.UnBind();
 }
 
-glm::vec2 MainLayer::Lerp(glm::vec2 a, glm::vec2 b, float p) {
+glm::vec2 CanvasLayer::Lerp(glm::vec2 a, glm::vec2 b, float p) {
     return a + p * (b-a);
 }
 
-glm::vec2 MainLayer::ScreenToWorld(ImVec2 screenCoords) {
+glm::vec2 CanvasLayer::ScreenToWorld(ImVec2 screenCoords) {
     return glm::vec2(
         screenCoords.x/m_ViewportSize.x - 0.5f,
         1.0f - screenCoords.y/m_ViewportSize.y - 0.5f
     ) * m_CameraController.GetBounds() + glm::vec2(m_CameraController.GetCamera().GetPosition());
 }
 
-ImVec2 MainLayer::WorldToScreen(glm::vec2 worldCoords) {
+ImVec2 CanvasLayer::WorldToScreen(glm::vec2 worldCoords) {
     return glm::vec2(
         0.5f + (worldCoords.x - m_CameraController.GetCamera().GetPosition().x)/m_CameraController.GetBounds().x,
         0.5f - (worldCoords.y - m_CameraController.GetCamera().GetPosition().y)/m_CameraController.GetBounds().y

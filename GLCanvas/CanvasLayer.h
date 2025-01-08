@@ -3,7 +3,7 @@
 #include <glbpch.h>
 #include <GLBox.h>
 
-class MainLayer : public Layer {
+class CanvasLayer : public Layer {
 private:
     OrthoCameraController m_CameraController;
     FrameBuffer m_Framebuffer;
@@ -16,8 +16,8 @@ private:
     glm::vec2 m_WorldMousePos = { 0, 0 };
     ImVec2 m_WindowMousePos = { 0, 0 };
 public:
-    MainLayer();
-    ~MainLayer();
+    CanvasLayer();
+    ~CanvasLayer();
 
     void OnEvent(Event& event) override;
     void OnAttach() override;
