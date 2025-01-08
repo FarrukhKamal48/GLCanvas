@@ -4,69 +4,31 @@
 #include <GLBox.h>
 
 #include "GLCanvas/ImVec2Extend.h"
-#include "GLCanvas/Canvas/Canvas.h"
+
 
 class MainLayer : public Layer {
 private:
+    OrthoCameraController m_CameraController;
     FrameBuffer m_Framebuffer;
-    Canvas m_Canvas;
+    
+    QuadTransform_Manager m_Manager;
+    uint32_t m_BackgroundI = -1;
+    
+    glm::vec2 m_ViewportSize = { 0, 0 };
+    glm::vec2 m_WorldMouseDelta = { 0, 0 };
+    glm::vec2 m_WorldMousePos = { 0, 0 };
+    ImVec2 m_WindowMousePos = { 0, 0 };
 public:
-    MainLayer() 
-        : Layer("Spin Test")
-        , m_Framebuffer({ 1920, 1080, { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 }})
-    { }
-    ~MainLayer() { }
+    MainLayer();
+    ~MainLayer();
 
-    void OnEvent(Event& event) override {
-        EventDispacher dispacher(event);
-        m_Canvas.OnEvent(event);
-    }
-
-    void OnAttach() override {
-        Renderer::SetCamera(m_Canvas.GetCameraController().GetCamera());
-        m_Canvas.OnAttach();
-    }
-
-    void OnUpdate(float dt) override {
-        m_Canvas.OnUpdate(dt);
-        m_Framebuffer.ClearColorAttachment(1, -1);
-    }
-
-    void OnRender() override {
-        m_Framebuffer.Bind();
-    }
- 
-    void OnImGuiRender() override {
-        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
-        
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
-        ImGui::Begin("Canvas");
-        {
-            ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-            if (m_Canvas.GetViewportSize() != viewportSize) {
-                m_Canvas.OnViewportResize({ viewportSize.x, viewportSize.y });
-                m_Framebuffer.Resize(viewportSize.x, viewportSize.y);
-            }
-            ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
-
-            auto [mx, my] = m_Canvas.GetWindowMousePos();
-            my = viewportSize.y - my;
-
-            int pixelData;
-            m_Framebuffer.ReadPixels(1, mx, my, FBTextureFormat::RED_INTEGER, pixelData);
-            BASIC_LOG(pixelData);
-            
-            m_Canvas.OnImGuiRender();
-        }
-        ImGui::End();
-        ImGui::PopStyleVar();
-
-        ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoTitleBar); 
-        {
-            ImGui::Button("Hell");
-        }
-        ImGui::End();
-        
-        m_Framebuffer.UnBind();
-    }
+    void OnEvent(Event& event) override;
+    void OnAttach() override;
+    void OnUpdate(float dt) override; 
+    void OnRender() override; 
+    void OnImGuiRender() override; 
+private:
+    glm::vec2 Lerp(glm::vec2 a, glm::vec2 b, float p);
+    glm::vec2 ScreenToWorld(ImVec2 screenCoords); 
+    ImVec2 WorldToScreen(glm::vec2 worldCoords); 
 };
