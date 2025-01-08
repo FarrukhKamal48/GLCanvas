@@ -50,7 +50,7 @@ void Canvas::OnUpdate(float dt) {
     else
         m_Manager[m_BackgroundI].scale = Lerp(m_Manager[m_BackgroundI].scale, glm::vec2(0.05f), dt * 10.0f);
     
-    m_Manager[m_BackgroundI].position = glm::vec3(m_WorldMousePos, 0.0f);
+    // m_Manager[m_BackgroundI].position = glm::vec3(m_WorldMousePos, 0.0f);
     m_Manager[m_BackgroundI].rotation += 5 * dt;
 }
 void Canvas::OnImGuiRender() {
