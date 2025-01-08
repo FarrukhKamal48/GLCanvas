@@ -3,9 +3,6 @@
 #include <glbpch.h>
 #include <GLBox.h>
 
-#include "GLCanvas/ImVec2Extend.h"
-
-
 class MainLayer : public Layer {
 private:
     OrthoCameraController m_CameraController;

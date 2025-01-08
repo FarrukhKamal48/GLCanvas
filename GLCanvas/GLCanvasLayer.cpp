@@ -1,12 +1,18 @@
 #include "GLCanvas/GLCanvasLayer.h"
+#include "GLCanvas/ImVec2Extend.h"
 
 #define PI glm::pi<float>()
 
 MainLayer::MainLayer() 
     : Layer("Canvas Layer")
     , m_CameraController(16.0f/9.0f, 1.0f) 
-    , m_Framebuffer({ 1920, 1080, { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 }})
-{ }
+{
+    FBSpec spec;
+    spec.Width = 1920;
+    spec.Height = 1080;
+    spec.Attachments = { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 };
+    m_Framebuffer = FrameBuffer(spec);
+}
 MainLayer::~MainLayer() { }
 
 void MainLayer::OnEvent(Event& event) {
@@ -35,7 +41,6 @@ void MainLayer::OnAttach() {
 }
 
 void MainLayer::OnUpdate(float dt) {
-    // m_Framebuffer.ClearColorAttachment(1, -1);
     
     if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
         m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
@@ -57,6 +62,8 @@ void MainLayer::OnUpdate(float dt) {
 
 void MainLayer::OnRender() {
     m_Framebuffer.Bind();
+    Renderer::Clear(0.9, 0.9, 0.9, 1);
+    m_Framebuffer.ClearAttachment(1, -1);
 }
 
 void MainLayer::OnImGuiRender() {
@@ -85,9 +92,8 @@ void MainLayer::OnImGuiRender() {
         auto [mx, my] = m_WindowMousePos;
         my = viewportSize.y - my;
 
-        int pixelData;
-        m_Framebuffer.ReadPixels(1, mx, my, FBTextureFormat::RED_INTEGER, pixelData);
-        BASIC_LOG(pixelData);
+        int pixeldata = m_Framebuffer.ReadPixel(1, mx, my);
+        BASIC_LOG(pixeldata);
         
     }
     ImGui::End();
