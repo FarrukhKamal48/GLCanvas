@@ -13,7 +13,7 @@ private:
 public:
     MainLayer() 
         : Layer("Spin Test")
-        , m_Framebuffer({ 1920, 1080, { FBTextureFormat::RGBA8, FBTextureFormat::RGBA8, FBTextureFormat::DEPTH24STENCIL8 }})
+        , m_Framebuffer({ 1920, 1080, { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 }})
     { }
     ~MainLayer() { }
 
@@ -29,6 +29,7 @@ public:
 
     void OnUpdate(float dt) override {
         m_Canvas.OnUpdate(dt);
+        m_Framebuffer.ClearColorAttachment(1, -1);
     }
 
     void OnRender() override {
@@ -48,6 +49,13 @@ public:
             }
             ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
 
+            auto [mx, my] = m_Canvas.GetWindowMousePos();
+            my = viewportSize.y - my;
+
+            int pixelData;
+            m_Framebuffer.ReadPixels(1, mx, my, FBTextureFormat::RED_INTEGER, pixelData);
+            BASIC_LOG(pixelData);
+            
             m_Canvas.OnImGuiRender();
         }
         ImGui::End();

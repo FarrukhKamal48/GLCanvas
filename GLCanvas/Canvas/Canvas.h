@@ -19,6 +19,7 @@ public:
 
     OrthoCameraController& GetCameraController() { return m_CameraController; }
     glm::vec2 GetWorldMousePos() { return m_WorldMousePos; }
+    ImVec2 GetWindowMousePos() { return m_WindowMousePos; }
     const glm::vec2& GetViewportSize() { return m_ViewportSize; }
 
     glm::vec2 ScreenToWorld(ImVec2 screenCoords);
