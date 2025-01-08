@@ -14,8 +14,8 @@ void Canvas::OnEvent(Event& event) {
 
 void Canvas::OnAttach() {
     m_BackgroundI = m_Manager.AllocateObject(10, [](InstanceRenderer& renderer) {
-        renderer.CreateShader("GLBox/assets/shaders/instancing/RotationQuad.vert", 
-                              "GLBox/assets/shaders/instancing/RotationQuad.frag");
+        renderer.CreateShader("Assets/Shaders/ColorQuad.vert", 
+                              "Assets/Shaders/ColorQuad.frag");
     });
     
     for (int i = 0; i < 10; i++) {

@@ -13,7 +13,7 @@ private:
 public:
     MainLayer() 
         : Layer("Spin Test")
-        , m_Framebuffer({ 1920, 1080, false })
+        , m_Framebuffer({ 1920, 1080, { FBTextureFormat::RGBA8, FBTextureFormat::RGBA8, FBTextureFormat::DEPTH24STENCIL8 }})
     { }
     ~MainLayer() { }
 
