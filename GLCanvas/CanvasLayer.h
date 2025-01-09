@@ -2,13 +2,14 @@
 
 #include <glbpch.h>
 #include <GLBox.h>
+#include "Cards/CardObject.h"
 
 class CanvasLayer : public Layer {
 private:
     OrthoCameraController m_CameraController;
     FrameBuffer m_Framebuffer;
     
-    QuadTransform_Manager m_Manager;
+    CardTransform_Manager m_Manager;
     uint32_t m_BackgroundI = -1;
     
     glm::vec2 m_ViewportSize = { 0, 0 };

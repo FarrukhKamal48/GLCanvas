@@ -1,4 +1,5 @@
 #include "GLCanvas/CanvasLayer.h"
+#include "Cards/CardObject.h"
 #include "GLCanvas/ImVec2Extend.h"
 
 #define PI glm::pi<float>()
@@ -23,8 +24,8 @@ void CanvasLayer::OnEvent(Event& event) {
 void CanvasLayer::OnAttach() {
     Renderer::SetCamera(m_CameraController.GetCamera());
     m_BackgroundI = m_Manager.AllocateObject(10, [](InstanceRenderer& renderer) {
-        renderer.CreateShader("Assets/Shaders/ColorQuad.vert", 
-                              "Assets/Shaders/ColorQuad.frag");
+        renderer.CreateShader("Assets/Shaders/Card.vert", 
+                              "Assets/Shaders/Card.frag");
     });
     
     for (int i = 0; i < 10; i++) {
@@ -32,12 +33,14 @@ void CanvasLayer::OnAttach() {
         m_Manager[m_BackgroundI+i].scale = glm::vec2(0.05);
         m_Manager[m_BackgroundI+i].rotation = PI/4;
         m_Manager[m_BackgroundI+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1.0f);
+        m_Manager[m_BackgroundI+i].cardID = 1;
     }
 
     m_Manager[m_BackgroundI].position = {0,0,1};
     m_Manager[m_BackgroundI].scale = glm::vec2(0.05);
     m_Manager[m_BackgroundI].rotation = PI/4;
     m_Manager[m_BackgroundI].color = glm::vec4(0,0,0,1);
+    m_Manager[m_BackgroundI].cardID = 1;
 }
 
 void CanvasLayer::OnUpdate(float dt) {
