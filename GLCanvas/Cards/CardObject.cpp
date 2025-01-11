@@ -3,7 +3,7 @@
 template<>
 void VertexBufferLayout::Push<int>(uint32_t count, uint32_t divisor) {
     m_Elements.push_back({ count, GL_INT, GL_FALSE, divisor });
-    m_Stride += count * 4;
+    m_Stride += count * VertexBufferLayoutElement::SizeOf(GL_INT);
 }
 
 uint32_t CardTransform_Manager::SizeOfObject()                             const { return sizeof(CardTransform); }

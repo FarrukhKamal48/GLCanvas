@@ -29,18 +29,19 @@ void CanvasLayer::OnAttach() {
     });
     
     for (int i = 0; i < 10; i++) {
-        m_Manager[m_BackgroundI+i].position = glm::vec3(glm::cos(i), glm::sin(i), -1);
+        m_Manager[m_BackgroundI+i].position = glm::vec3(glm::cos(i), glm::sin(i), 1);
         m_Manager[m_BackgroundI+i].scale = glm::vec2(0.05);
         m_Manager[m_BackgroundI+i].rotation = PI/4;
         m_Manager[m_BackgroundI+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1.0f);
-        m_Manager[m_BackgroundI+i].cardID = 1;
+        m_Manager[m_BackgroundI+i].cardID = i;
     }
+    m_Manager[m_BackgroundI+9].position = glm::vec3(0.0f, 0.05f, 0.9f);
 
     m_Manager[m_BackgroundI].position = {0,0,1};
     m_Manager[m_BackgroundI].scale = glm::vec2(0.05);
     m_Manager[m_BackgroundI].rotation = PI/4;
     m_Manager[m_BackgroundI].color = glm::vec4(0,0,0,1);
-    m_Manager[m_BackgroundI].cardID = 1;
+    m_Manager[m_BackgroundI].cardID = 0;
 }
 
 void CanvasLayer::OnUpdate(float dt) {
@@ -65,7 +66,7 @@ void CanvasLayer::OnUpdate(float dt) {
 
 void CanvasLayer::OnRender() {
     m_Framebuffer.Bind();
-    Renderer::Clear(0.9, 0.9, 0.9, 1);
+    Renderer::Clear(0.9,0.9,0.9,1);
     m_Framebuffer.ClearAttachment(1, -1);
 }
 
