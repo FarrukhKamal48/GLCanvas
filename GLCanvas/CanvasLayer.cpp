@@ -29,7 +29,7 @@ void CanvasLayer::OnAttach() {
     });
     
     for (int i = 0; i < 10; i++) {
-        m_Manager[m_BackgroundI+i].position = glm::vec3(glm::cos(i), glm::sin(i), 1);
+        m_Manager[m_BackgroundI+i].position = glm::vec3(glm::cos(i), glm::sin(i), 0);
         m_Manager[m_BackgroundI+i].scale = glm::vec2(0.05);
         m_Manager[m_BackgroundI+i].rotation = PI/4;
         m_Manager[m_BackgroundI+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1.0f);
@@ -37,7 +37,7 @@ void CanvasLayer::OnAttach() {
     }
     m_Manager[m_BackgroundI+9].position = glm::vec3(0.0f, 0.05f, 0.9f);
 
-    m_Manager[m_BackgroundI].position = {0,0,1};
+    m_Manager[m_BackgroundI].position = {0,0,0};
     m_Manager[m_BackgroundI].scale = glm::vec2(0.05);
     m_Manager[m_BackgroundI].rotation = PI/4;
     m_Manager[m_BackgroundI].color = glm::vec4(0,0,0,1);
@@ -45,9 +45,7 @@ void CanvasLayer::OnAttach() {
 }
 
 void CanvasLayer::OnUpdate(float dt) {
-    
-    if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
-        m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
+    m_Framebuffer.Bind();
     
     m_WorldMousePos = ScreenToWorld(m_WindowMousePos);
 
@@ -55,17 +53,29 @@ void CanvasLayer::OnUpdate(float dt) {
     m_WorldMouseDelta = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
     lastPos = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition());
     
-    if (Input::KeyPressed(Key::Space))
-        m_Manager[m_BackgroundI].scale = Lerp(m_Manager[m_BackgroundI].scale, glm::vec2(0.01f), dt * 10.0f);
-    else
-        m_Manager[m_BackgroundI].scale = Lerp(m_Manager[m_BackgroundI].scale, glm::vec2(0.05f), dt * 10.0f);
+    auto [mx, my] = m_WindowMousePos;
+    my = m_ViewportSize.y - my;
+    m_HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
     
-    // m_Manager[m_BackgroundI].position = glm::vec3(m_WorldMousePos, 0.0f);
-    m_Manager[m_BackgroundI].rotation += 5 * dt;
+    m_InputState = NextInputSate();
+    switch (m_InputState) {
+        case InputState::Idle: 
+            m_Manager[m_BackgroundI].rotation += 5 * dt;
+            break;
+        case InputState::Panning: 
+            m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
+            break;
+        case InputState::DraggCard:
+            m_Manager[m_HoveredCardID].position += glm::vec3(m_WorldMouseDelta, 0.0f);
+            m_Manager[m_HoveredCardID].position.z = 1.0f;
+            break;
+        case InputState::DraggSelect:
+            // BASIC_LOG("Not Implimented");
+            break;
+    }
 }
 
 void CanvasLayer::OnRender() {
-    m_Framebuffer.Bind();
     Renderer::Clear(0.9,0.9,0.9,1);
     m_Framebuffer.ClearAttachment(1, -1);
 }
@@ -92,13 +102,6 @@ void CanvasLayer::OnImGuiRender() {
             10 / m_CameraController.GetZoomLevel(), 
             IM_COL32(255, 255, 0, 255)
         );
-
-        auto [mx, my] = m_WindowMousePos;
-        my = viewportSize.y - my;
-
-        int pixeldata = m_Framebuffer.ReadPixel(1, mx, my);
-        BASIC_LOG(pixeldata);
-        
     }
     ImGui::End();
     ImGui::PopStyleVar();
@@ -106,6 +109,7 @@ void CanvasLayer::OnImGuiRender() {
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoTitleBar); 
     {
         ImGui::Button("Hell");
+        ImGui::Text("%d", (int)m_InputState);
     }
     ImGui::End();
     
@@ -130,3 +134,15 @@ ImVec2 CanvasLayer::WorldToScreen(glm::vec2 worldCoords) {
     ) * m_ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - m_ViewportSize.y);
 }
 
+bool CanvasLayer::IsValidCard(uint32_t id) { return id != m_InvalidID && id >= m_BackgroundI && id < 10; }
+
+InputState CanvasLayer::NextInputSate() {
+    if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
+        return InputState::Panning;
+    else if (Input::MousePressed(Mouse::ButtonLeft) && IsValidCard(m_HoveredCardID))
+        return InputState::DraggCard;
+    else if (Input::MousePressed(Mouse::ButtonLeft) && !IsValidCard(m_HoveredCardID))
+        return InputState::DraggSelect;
+    else
+        return InputState::Idle;
+}
