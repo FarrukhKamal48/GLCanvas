@@ -3,11 +3,11 @@
 #include "GLCanvas/Canvas/States.h"
 #include "GLCanvas/ImVec2Extend.h"
 
+namespace Canvas {
+
 class CanvasManager {
 public:
-    CanvasManager(StateKey startState) 
-        : m_ActiveState(startState), m_NextState(startState) 
-    {
+    CanvasManager() {
         m_States.reserve(State::MAX);
         m_States[State::Idle] = new IdleState(State::Idle);
         m_States[State::Panning] = new PanningState(State::Panning);
@@ -54,6 +54,9 @@ public:
     }; 
 private:
     std::vector<BaseState*> m_States;
-    StateKey m_ActiveState, m_NextState;
+    StateKey m_ActiveState = State::Idle;
+    StateKey m_NextState = State::Idle;
     bool m_IsTransitioning;
 };
+
+}

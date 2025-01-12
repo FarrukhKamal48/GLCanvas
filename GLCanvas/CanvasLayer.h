@@ -23,7 +23,7 @@ private:
     uint32_t m_HoveredCardID = -1;
     const uint32_t m_InvalidID = -1;
     
-    CanvasManager m_CanvasManager;
+    Canvas::CanvasManager m_CanvasManager;
 public:
     CanvasLayer();
     ~CanvasLayer();

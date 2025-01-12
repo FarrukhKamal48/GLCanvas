@@ -7,14 +7,13 @@
 CanvasLayer::CanvasLayer() 
     : Layer("Canvas Layer")
     , m_CameraController(16.0f/9.0f, 1.0f) 
-    , m_CanvasManager(State::Idle)
 {
     FBSpec spec;
     spec.Width = 1920;
     spec.Height = 1080;
     spec.Attachments = { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 };
     m_Framebuffer = FrameBuffer(spec);
-    CVData().m_CameraController = &m_CameraController;
+    Canvas::CVData().m_CameraController = &m_CameraController;
 }
 CanvasLayer::~CanvasLayer() { }
 
@@ -50,8 +49,8 @@ void CanvasLayer::OnAttach() {
 void CanvasLayer::OnUpdate(float dt) {
     m_Framebuffer.Bind();
     
-    auto [mx, my] = CVData().m_WindowMousePos;
-    my = CVData().m_ViewportSize.y - my;
+    auto [mx, my] = Canvas::CVData().m_WindowMousePos;
+    my = Canvas::CVData().m_ViewportSize.y - my;
     m_HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
 
     m_CanvasManager.OnUpdate(dt);
@@ -87,8 +86,8 @@ void CanvasLayer::OnImGuiRender() {
     ImGui::Begin("Canvas");
     {
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-        if (CVData().m_ViewportSize != viewportSize) {
-            CVData().m_ViewportSize = { viewportSize.x, viewportSize.y };
+        if (Canvas::CVData().m_ViewportSize != viewportSize) {
+            Canvas::CVData().m_ViewportSize = { viewportSize.x, viewportSize.y };
             m_CameraController.OnResize(viewportSize.x, viewportSize.y);
             m_Framebuffer.Resize(viewportSize.x, viewportSize.y);
         }

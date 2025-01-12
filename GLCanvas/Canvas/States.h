@@ -2,6 +2,8 @@
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
 
+namespace Canvas {
+
 class IdleState : public BaseState {
 public:
     IdleState(StateKey state) : BaseState(state) {}
@@ -33,3 +35,5 @@ public:
         return State::Panning;
     }
 };
+
+}

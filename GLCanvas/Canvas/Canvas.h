@@ -1,6 +1,8 @@
 #pragma once
 #include <GLBox.h>
 
+namespace Canvas {
+
 typedef uint32_t StateKey;
 namespace State {
     enum : StateKey {
@@ -36,3 +38,5 @@ public:
 protected:
     StateKey m_State;
 };
+
+}
