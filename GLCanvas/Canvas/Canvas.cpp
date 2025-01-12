@@ -1,5 +1,5 @@
 #include "GLCanvas/Canvas/Canvas.h"
-#include "GLCanvas/ImVec2Extend.h"
+#include "GLCanvas/ImVec2Defines.h"
 
 namespace Canvas {
 static CanvasData s_CVData;
