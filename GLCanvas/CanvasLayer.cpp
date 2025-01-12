@@ -7,6 +7,7 @@
 CanvasLayer::CanvasLayer() 
     : Layer("Canvas Layer")
     , m_CameraController(16.0f/9.0f, 1.0f) 
+    , m_CanvasManager(CanvasState::Idle, m_CameraController)
 {
     FBSpec spec;
     spec.Width = 1920;
@@ -19,6 +20,7 @@ CanvasLayer::~CanvasLayer() { }
 void CanvasLayer::OnEvent(Event& event) {
     EventDispacher dispacher(event);
     m_CameraController.OnEvent(event);
+    m_CanvasManager.OnEvent(event);
 }
 
 void CanvasLayer::OnAttach() {
@@ -47,37 +49,34 @@ void CanvasLayer::OnAttach() {
 void CanvasLayer::OnUpdate(float dt) {
     m_Framebuffer.Bind();
     
-    m_WorldMousePos = ScreenToWorld(m_WindowMousePos);
-
-    static glm::vec2 lastPos = { 0, 0 };
-    m_WorldMouseDelta = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition()) - lastPos;
-    lastPos = m_WorldMousePos - glm::vec2(m_CameraController.GetCamera().GetPosition());
-    
-    auto [mx, my] = m_WindowMousePos;
-    my = m_ViewportSize.y - my;
+    auto [mx, my] = m_CanvasManager.Data().m_WindowMousePos;
+    my = m_CanvasManager.Data().m_ViewportSize.y - my;
     m_HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
-    
-    m_InputState = NextInputSate();
-    switch (m_InputState) {
-        case InputState::Idle: 
-            m_Manager[m_BackgroundI].rotation += 5 * dt;
-            break;
-        case InputState::Panning: 
-            m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
-            break;
-        case InputState::DraggCard:
-            m_Manager[m_HoveredCardID].position += glm::vec3(m_WorldMouseDelta, 0.0f);
-            m_Manager[m_HoveredCardID].position.z = 1.0f;
-            break;
-        case InputState::DraggSelect:
-            // BASIC_LOG("Not Implimented");
-            break;
-    }
+
+    m_CanvasManager.OnUpdate(dt);
+
+    // m_InputState = NextInputSate();
+    // switch (m_InputState) {
+    //     case InputState::Idle: 
+    //         m_Manager[m_BackgroundI].rotation += 5 * dt;
+    //         break;
+    //     case InputState::Panning: 
+    //         m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
+    //         break;
+    //     case InputState::DraggCard:
+    //         m_Manager[m_HoveredCardID].position += glm::vec3(m_WorldMouseDelta, 0.0f);
+    //         m_Manager[m_HoveredCardID].position.z = 1.0f;
+    //         break;
+    //     case InputState::DraggSelect:
+    //         // BASIC_LOG("Not Implimented");
+    //         break;
+    // }
 }
 
 void CanvasLayer::OnRender() {
     Renderer::Clear(0.9,0.9,0.9,1);
     m_Framebuffer.ClearAttachment(1, -1);
+    m_CanvasManager.OnRender();
 }
 
 void CanvasLayer::OnImGuiRender() {
@@ -87,21 +86,13 @@ void CanvasLayer::OnImGuiRender() {
     ImGui::Begin("Canvas");
     {
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-        if (m_ViewportSize != viewportSize) {
-            m_ViewportSize = { viewportSize.x, viewportSize.y };
-            m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+        if (m_CanvasManager.Data().m_ViewportSize != viewportSize) {
+            m_CanvasManager.Data().m_ViewportSize = { viewportSize.x, viewportSize.y };
+            m_CameraController.OnResize(viewportSize.x, viewportSize.y);
             m_Framebuffer.Resize(viewportSize.x, viewportSize.y);
         }
         ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
-
-        m_WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
-            - ImVec2(0, ImGui::GetWindowHeight() - m_ViewportSize.y);
-
-        ImGui::GetWindowDrawList()->AddCircleFilled(
-            WorldToScreen(m_WorldMousePos), 
-            10 / m_CameraController.GetZoomLevel(), 
-            IM_COL32(255, 255, 0, 255)
-        );
+        m_CanvasManager.OnCanvasRender();
     }
     ImGui::End();
     ImGui::PopStyleVar();
@@ -109,7 +100,6 @@ void CanvasLayer::OnImGuiRender() {
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoTitleBar); 
     {
         ImGui::Button("Hell");
-        ImGui::Text("%d", (int)m_InputState);
     }
     ImGui::End();
     
@@ -120,29 +110,3 @@ glm::vec2 CanvasLayer::Lerp(glm::vec2 a, glm::vec2 b, float p) {
     return a + p * (b-a);
 }
 
-glm::vec2 CanvasLayer::ScreenToWorld(ImVec2 screenCoords) {
-    return glm::vec2(
-        screenCoords.x/m_ViewportSize.x - 0.5f,
-        1.0f - screenCoords.y/m_ViewportSize.y - 0.5f
-    ) * m_CameraController.GetBounds() + glm::vec2(m_CameraController.GetCamera().GetPosition());
-}
-
-ImVec2 CanvasLayer::WorldToScreen(glm::vec2 worldCoords) {
-    return glm::vec2(
-        0.5f + (worldCoords.x - m_CameraController.GetCamera().GetPosition().x)/m_CameraController.GetBounds().x,
-        0.5f - (worldCoords.y - m_CameraController.GetCamera().GetPosition().y)/m_CameraController.GetBounds().y
-    ) * m_ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - m_ViewportSize.y);
-}
-
-bool CanvasLayer::IsValidCard(uint32_t id) { return id != m_InvalidID && id >= m_BackgroundI && id < 10; }
-
-InputState CanvasLayer::NextInputSate() {
-    if (Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft))
-        return InputState::Panning;
-    else if (Input::MousePressed(Mouse::ButtonLeft) && IsValidCard(m_HoveredCardID))
-        return InputState::DraggCard;
-    else if (Input::MousePressed(Mouse::ButtonLeft) && !IsValidCard(m_HoveredCardID))
-        return InputState::DraggSelect;
-    else
-        return InputState::Idle;
-}
