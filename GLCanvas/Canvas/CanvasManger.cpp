@@ -23,11 +23,11 @@ void CanvasManager::OnEvent(Event& event) {
 };
 
 void CanvasManager::OnUpdate(float dt) {
-    CVData().m_WorldMousePos = ScreenToWorld(CVData().m_WindowMousePos);
+    CVData().WorldMousePos = ScreenToWorld(CVData().WindowMousePos);
 
     static glm::vec2 lastPos = { 0, 0 };
-    CVData().m_WorldMouseDelta = CVData().m_WorldMousePos - glm::vec2(CVData().m_CameraController->GetCamera().GetPosition()) - lastPos;
-    lastPos = CVData().m_WorldMousePos - glm::vec2(CVData().m_CameraController->GetCamera().GetPosition());
+    CVData().WorldMouseDelta = CVData().WorldMousePos - glm::vec2(CVData().Camera->GetCamera().GetPosition()) - lastPos;
+    lastPos = CVData().WorldMousePos - glm::vec2(CVData().Camera->GetCamera().GetPosition());
     
     m_NextState = m_States[m_ActiveState]->GetNextState();
     if (!m_IsTransitioning && m_ActiveState != m_NextState) {
@@ -45,12 +45,12 @@ void CanvasManager::OnUpdate(float dt) {
 void CanvasManager::OnRender() { }; 
 
 void CanvasManager::OnCanvasRender() {
-    CVData().m_WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
-        - ImVec2(0, ImGui::GetWindowHeight() - CVData().m_ViewportSize.y);
+    CVData().WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
+        - ImVec2(0, ImGui::GetWindowHeight() - CVData().ViewportSize.y);
 
     ImGui::GetWindowDrawList()->AddCircleFilled(
-        WorldToScreen(CVData().m_WorldMousePos), 
-        10 / CVData().m_CameraController->GetZoomLevel(), 
+        WorldToScreen(CVData().WorldMousePos), 
+        10 / CVData().Camera->GetZoomLevel(), 
         IM_COL32(255, 255, 0, 255)
     );
 }; 

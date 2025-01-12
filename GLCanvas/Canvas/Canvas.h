@@ -15,11 +15,11 @@ namespace State {
 }
 
 struct CanvasData {
-    OrthoCameraController* m_CameraController;
-    glm::vec2 m_ViewportSize = { 0, 0 };
-    glm::vec2 m_WorldMouseDelta = { 0, 0 };
-    glm::vec2 m_WorldMousePos = { 0, 0 };
-    ImVec2 m_WindowMousePos = { 0, 0 };
+    OrthoCameraController* Camera;
+    glm::vec2 ViewportSize = { 0, 0 };
+    glm::vec2 WorldMouseDelta = { 0, 0 };
+    glm::vec2 WorldMousePos = { 0, 0 };
+    ImVec2 WindowMousePos = { 0, 0 };
 };
 CanvasData& CVData();
 glm::vec2 ScreenToWorld(ImVec2 screenCoords);
