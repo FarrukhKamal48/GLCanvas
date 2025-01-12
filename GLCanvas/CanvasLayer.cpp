@@ -1,5 +1,5 @@
 #include "Cards/CardObject.h"
-#include "GLCanvas/ImVec2Extend.h"
+#include "GLCanvas/ImVec2Defines.h"
 #include "GLCanvas/CanvasLayer.h"
 
 #define PI glm::pi<float>()
@@ -81,8 +81,8 @@ void CanvasLayer::OnRender() {
 
 void CanvasLayer::OnImGuiRender() {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
-    
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
+    
     ImGui::Begin("Canvas");
     {
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
@@ -95,14 +95,14 @@ void CanvasLayer::OnImGuiRender() {
         m_CanvasManager.OnCanvasRender();
     }
     ImGui::End();
-    ImGui::PopStyleVar();
 
-    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoTitleBar); 
+    ImGui::Begin("Drawer", nullptr, ImGuiWindowFlags_NoTitleBar); 
     {
-        ImGui::Button("Hell");
+        ImGui::Button("Press");
     }
     ImGui::End();
     
+    ImGui::PopStyleVar();
     m_Framebuffer.UnBind();
 }
 
