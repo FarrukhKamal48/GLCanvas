@@ -53,6 +53,8 @@ void CanvasManager::OnCanvasRender() {
         10 / CVData().Camera->GetZoomLevel(), 
         IM_COL32(255, 255, 0, 255)
     );
+
+    m_States[m_ActiveState]->OnImGuiRender();
 }; 
 
 }

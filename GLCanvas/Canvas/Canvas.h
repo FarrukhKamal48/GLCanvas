@@ -35,6 +35,7 @@ public:
     virtual void OnEvent(Event& event) = 0;
     virtual void OnUpdate(float dt) = 0;
     virtual void OnExit() = 0;
+    virtual void OnImGuiRender() = 0;
     virtual StateKey GetNextState() = 0;
 protected:
     StateKey m_State;

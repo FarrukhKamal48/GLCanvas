@@ -10,9 +10,10 @@ public:
     ~IdleState() {}
     
     void OnEnter() override { BASIC_LOG("Idle"); }
-    void OnEvent(Event& event) override {} 
+    void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { } 
-    void OnExit() override {} 
+    void OnImGuiRender() override { }
+    void OnExit() override { } 
     StateKey GetNextState() override { 
         if (Input::KeyPressed(Key::Space))
             return State::Panning; 
