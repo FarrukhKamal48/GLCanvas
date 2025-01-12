@@ -51,26 +51,9 @@ void CanvasLayer::OnUpdate(float dt) {
     
     auto [mx, my] = Canvas::CVData().WindowMousePos;
     my = Canvas::CVData().ViewportSize.y - my;
-    m_HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
+    Canvas::CVData().HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
 
     m_CanvasManager.OnUpdate(dt);
-
-    // m_InputState = NextInputSate();
-    // switch (m_InputState) {
-    //     case InputState::Idle: 
-    //         m_Manager[m_BackgroundI].rotation += 5 * dt;
-    //         break;
-    //     case InputState::Panning: 
-    //         m_CameraController.Translate(-glm::vec3(m_WorldMouseDelta, 0.0f));
-    //         break;
-    //     case InputState::DraggCard:
-    //         m_Manager[m_HoveredCardID].position += glm::vec3(m_WorldMouseDelta, 0.0f);
-    //         m_Manager[m_HoveredCardID].position.z = 1.0f;
-    //         break;
-    //     case InputState::DraggSelect:
-    //         // BASIC_LOG("Not Implimented");
-    //         break;
-    // }
 }
 
 void CanvasLayer::OnRender() {
@@ -106,7 +89,4 @@ void CanvasLayer::OnImGuiRender() {
     m_Framebuffer.UnBind();
 }
 
-glm::vec2 CanvasLayer::Lerp(glm::vec2 a, glm::vec2 b, float p) {
-    return a + p * (b-a);
-}
 

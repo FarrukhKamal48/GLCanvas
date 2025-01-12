@@ -5,13 +5,6 @@
 #include "Cards/CardObject.h"
 #include "GLCanvas/Canvas/CanvasManager.h"
 
-enum class InputState {
-    Idle,
-    Panning,
-    DraggCard,
-    DraggSelect,
-};
-
 class CanvasLayer : public Layer {
 private:
     OrthoCameraController m_CameraController;
@@ -19,9 +12,6 @@ private:
     
     CardTransform_Manager m_Manager;
     uint32_t m_BackgroundI = -1;
-    
-    uint32_t m_HoveredCardID = -1;
-    const uint32_t m_InvalidID = -1;
     
     Canvas::CanvasManager m_CanvasManager;
 public:
