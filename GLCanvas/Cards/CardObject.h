@@ -33,6 +33,7 @@ private:
         0, 1, 2, 
         0, 2, 3
     };
+public:
     inline static std::vector<CardTransform> m_Instances = {};
     inline static int m_RendererI = -1;
 };

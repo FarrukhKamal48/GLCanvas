@@ -2,13 +2,15 @@
 #include "GLCanvas/Canvas/CanvasManager.h"
 #include "GLCanvas/States/IdleState.h"
 #include "GLCanvas/States/PanningState.h"
+#include "GLCanvas/States/DraggCardState.h"
 
 namespace Canvas {
 
 CanvasManager::CanvasManager() {
     m_States.reserve(State::MAX);
-    m_States[State::Idle] = new IdleState(State::Idle);
-    m_States[State::Panning] = new PanningState(State::Panning);
+    m_States[State::Idle] = new IdleState();
+    m_States[State::Panning] = new PanningState();
+    m_States[State::DraggCard] = new DraggCardState();
     m_States[m_ActiveState]->OnEnter();
 }
 
