@@ -12,7 +12,10 @@ public:
     
     void OnEnter() override { 
         m_CurrHoveredID = CVData().HoveredCardID;
-        m_CardOrgZdepth = m_CardAllocator[m_CurrHoveredID].position.z;
+        if (m_LastHoveredID != -1 && m_CurrHoveredID != -1) {
+            m_CardAllocator[m_CurrHoveredID].position.z = 1;
+            m_CardAllocator[m_LastHoveredID].position.z = 0;
+        }
     }
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { 
@@ -21,7 +24,7 @@ public:
     } 
     void OnImGuiRender() override { }
     void OnExit() override { 
-        m_CardAllocator[m_CurrHoveredID].position.z = m_CardOrgZdepth;
+        m_LastHoveredID = m_CurrHoveredID;
     } 
     StateKey GetNextState() override { 
         if (Input::MouseReleased(Mouse::ButtonLeft) || Input::KeyPressed(Key::LeftAlt))
@@ -30,7 +33,7 @@ public:
     }
 private:
     uint32_t m_CurrHoveredID = -1;
-    float m_CardOrgZdepth = 0.0f;
+    uint32_t m_LastHoveredID = -1;
     CardTransform_Manager m_CardAllocator;
 };
 
