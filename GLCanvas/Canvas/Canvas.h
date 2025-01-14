@@ -27,10 +27,11 @@ glm::vec2 ScreenToWorld(ImVec2 screenCoords);
 ImVec2 WorldToScreen(glm::vec2 worldCoords);
 
 class BaseState {
-public:
+protected:
     BaseState(StateKey state) : m_State(state) {}
+public:
     virtual ~BaseState() {}
-    StateKey GetState() { return m_State; }
+    const StateKey GetState() { return m_State; }
     virtual void OnEnter() = 0;
     virtual void OnEvent(Event& event) = 0;
     virtual void OnUpdate(float dt) = 0;
@@ -38,7 +39,7 @@ public:
     virtual void OnImGuiRender() = 0;
     virtual StateKey GetNextState() = 0;
 protected:
-    StateKey m_State;
+    const StateKey m_State;
 };
 
 }
