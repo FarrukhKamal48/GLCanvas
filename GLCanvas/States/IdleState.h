@@ -5,8 +5,8 @@
 
 namespace Canvas {
 
-static bool IsValid(uint32_t id) {
-    return id != -1 && id >= 0 && CardTransform_Manager().m_Instances.size();
+static bool IsValid(int32_t id) {
+    return id != -1 && id >= 0 && id < (int32_t)CardTransform_Manager().m_Instances.size();
 }
 
 class IdleState : public BaseState {
@@ -14,7 +14,7 @@ public:
     IdleState() : BaseState(State::Idle) {}
     ~IdleState() {}
     
-    void OnEnter() override { BASIC_LOG("Idle"); }
+    void OnEnter() override { }
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { } 
     void OnImGuiRender() override { }
