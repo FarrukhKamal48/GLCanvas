@@ -37,6 +37,7 @@ void CanvasManager::OnUpdate(float dt) {
     CVData().WorldMouseDelta = CVData().WorldMousePos - glm::vec2(CVData().Camera->GetCamera().GetPosition()) - lastPos;
     lastPos = CVData().WorldMousePos - glm::vec2(CVData().Camera->GetCamera().GetPosition());
     
+    static StateKey m_NextState;
     m_NextState = m_States[m_ActiveState]->GetNextState();
     if (!m_IsTransitioning && m_ActiveState != m_NextState) {
         m_IsTransitioning = true;

@@ -17,7 +17,6 @@ public:
 private:
     std::vector<BaseState*> m_States;
     StateKey m_ActiveState = State::Idle;
-    StateKey m_NextState = State::Idle;
     bool m_IsTransitioning = false;
 
     CardManager m_CardManger;
