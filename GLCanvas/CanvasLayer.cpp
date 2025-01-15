@@ -1,4 +1,3 @@
-#include "Cards/CardObject.h"
 #include "GLCanvas/ImVec2Defines.h"
 #include "GLCanvas/CanvasLayer.h"
 
@@ -25,25 +24,6 @@ void CanvasLayer::OnEvent(Event& event) {
 
 void CanvasLayer::OnAttach() {
     Renderer::SetCamera(m_CameraController.GetCamera());
-    m_BackgroundI = m_Manager.AllocateObject(10, [](InstanceRenderer& renderer) {
-        renderer.CreateShader("Assets/Shaders/Card.vert", 
-                              "Assets/Shaders/Card.frag");
-    });
-    
-    for (int i = 0; i < 10; i++) {
-        m_Manager[m_BackgroundI+i].position = glm::vec3(glm::cos(i), glm::sin(i), 0);
-        m_Manager[m_BackgroundI+i].scale = glm::vec2(0.05);
-        m_Manager[m_BackgroundI+i].rotation = PI/4;
-        m_Manager[m_BackgroundI+i].color = glm::vec4(i/10.0f, glm::sin(i), i/15.0f, 1.0f);
-        m_Manager[m_BackgroundI+i].cardID = i;
-    }
-    m_Manager[m_BackgroundI+9].position = glm::vec3(0.0f, 0.05f, 0.9f);
-
-    m_Manager[m_BackgroundI].position = {0,0,0};
-    m_Manager[m_BackgroundI].scale = glm::vec2(0.05);
-    m_Manager[m_BackgroundI].rotation = PI/4;
-    m_Manager[m_BackgroundI].color = glm::vec4(0,0,0,1);
-    m_Manager[m_BackgroundI].cardID = 0;
 }
 
 void CanvasLayer::OnUpdate(float dt) {
@@ -75,7 +55,7 @@ void CanvasLayer::OnImGuiRender() {
             m_Framebuffer.Resize(viewportSize.x, viewportSize.y);
         }
         ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
-        m_CanvasManager.OnCanvasRender();
+        m_CanvasManager.OnImGuiRender();
     }
     ImGui::End();
 
