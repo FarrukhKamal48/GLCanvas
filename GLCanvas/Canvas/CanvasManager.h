@@ -1,6 +1,7 @@
 #pragma once
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
+#include "GLCanvas/Cards/CardManager.h"
 
 namespace Canvas {
 
@@ -12,12 +13,14 @@ public:
     void OnEvent(Event& event);
     void OnUpdate(float dt); 
     void OnRender(); 
-    void OnCanvasRender(); 
+    void OnImGuiRender(); 
 private:
     std::vector<BaseState*> m_States;
     StateKey m_ActiveState = State::Idle;
     StateKey m_NextState = State::Idle;
     bool m_IsTransitioning = false;
+
+    CardManager m_CardManger;
 };
 
 }

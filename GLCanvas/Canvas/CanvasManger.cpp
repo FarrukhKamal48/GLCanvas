@@ -1,5 +1,6 @@
 #include "GLCanvas/ImVec2Defines.h"
 #include "GLCanvas/Canvas/CanvasManager.h"
+
 #include "GLCanvas/States/IdleState.h"
 #include "GLCanvas/States/PanningState.h"
 #include "GLCanvas/States/DraggCardState.h"
@@ -7,11 +8,15 @@
 namespace Canvas {
 
 CanvasManager::CanvasManager() {
+    CVData().Cardmanager = &m_CardManger;
     m_States.reserve(State::MAX);
     m_States[State::Idle] = new IdleState();
     m_States[State::Panning] = new PanningState();
     m_States[State::DraggCard] = new DraggCardState();
     m_States[m_ActiveState]->OnEnter();
+
+    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(0));
+    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(1));
 }
 
 CanvasManager::~CanvasManager() {
@@ -22,6 +27,7 @@ CanvasManager::~CanvasManager() {
 
 void CanvasManager::OnEvent(Event& event) {
     m_States[m_ActiveState]->OnEvent(event);
+    m_CardManger.OnEvent(event);
 };
 
 void CanvasManager::OnUpdate(float dt) {
@@ -42,11 +48,12 @@ void CanvasManager::OnUpdate(float dt) {
     else if (!m_IsTransitioning) {
         m_States[m_ActiveState]->OnUpdate(dt);
     }
+    m_CardManger.OnUpdate(dt);
 }; 
 
 void CanvasManager::OnRender() { }; 
 
-void CanvasManager::OnCanvasRender() {
+void CanvasManager::OnImGuiRender() {
     CVData().WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
         - ImVec2(0, ImGui::GetWindowHeight() - CVData().ViewportSize.y);
 
@@ -57,6 +64,7 @@ void CanvasManager::OnCanvasRender() {
     );
 
     m_States[m_ActiveState]->OnImGuiRender();
+    m_CardManger.OnImGuiRender();
 }; 
 
 }

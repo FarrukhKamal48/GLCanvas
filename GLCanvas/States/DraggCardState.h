@@ -1,6 +1,5 @@
 #pragma once
 #include <GLBox.h>
-#include "Cards/CardObject.h"
 #include "GLCanvas/Canvas/Canvas.h"
 
 namespace Canvas {
@@ -11,20 +10,20 @@ public:
     ~DraggCardState() {}
     
     void OnEnter() override { 
-        m_CurrHoveredID = CVData().HoveredCardID;
-        if (m_LastHoveredID != -1 && m_CurrHoveredID != -1) {
-            m_CardAllocator[m_CurrHoveredID].position.z = 1;
-            m_CardAllocator[m_LastHoveredID].position.z = 0;
+        m_CurrCardID = CVData().HoveredCardID;
+        if (m_LastCardID != -1 && m_CurrCardID != -1) {
+            CVData().Cardmanager->Get(m_CurrCardID).SetZDepth(1);
+            CVData().Cardmanager->Get(m_LastCardID).SetZDepth(0);
         }
     }
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { 
-        m_CardAllocator[m_CurrHoveredID].position += glm::vec3(CVData().WorldMouseDelta, 0.0f);
-        m_CardAllocator[m_CurrHoveredID].position.z = 1.0f;
+        CVData().Cardmanager->Get(m_CurrCardID).Drag(glm::vec3(CVData().WorldMouseDelta, 0.0f));
+        CVData().Cardmanager->Get(m_CurrCardID).SetZDepth(1.0f);
     } 
     void OnImGuiRender() override { }
     void OnExit() override { 
-        m_LastHoveredID = m_CurrHoveredID;
+        m_LastCardID = m_CurrCardID;
     } 
     StateKey GetNextState() override { 
         if (Input::MouseReleased(Mouse::ButtonLeft) || Input::KeyPressed(Key::LeftAlt))
@@ -32,9 +31,8 @@ public:
         return State::DraggCard;
     }
 private:
-    uint32_t m_CurrHoveredID = -1;
-    uint32_t m_LastHoveredID = -1;
-    CardTransform_Manager m_CardAllocator;
+    int32_t m_CurrCardID = -1;
+    int32_t m_LastCardID = -1;
 };
 
 }

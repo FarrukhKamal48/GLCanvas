@@ -1,13 +1,8 @@
 #pragma once
 #include <GLBox.h>
-#include "Cards/CardObject.h"
 #include "GLCanvas/Canvas/Canvas.h"
 
 namespace Canvas {
-
-static bool IsValid(int32_t id) {
-    return id != -1 && id >= 0 && id < (int32_t)CardTransform_Manager().m_Instances.size();
-}
 
 class IdleState : public BaseState {
 public:
@@ -23,7 +18,7 @@ public:
         if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
             return State::Panning;
         }
-        else if (Input::MousePressed(Mouse::ButtonLeft) && IsValid(CVData().HoveredCardID)) {
+        else if (Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
             return State::DraggCard;
         }
         return State::Idle;
