@@ -16,7 +16,7 @@ namespace State {
 
 struct CanvasData {
     OrthoCameraController* Camera;
-    uint32_t HoveredCardID = -1;
+    int32_t HoveredCardID = -1;
     glm::vec2 ViewportSize = { 0, 0 };
     glm::vec2 WorldMouseDelta = { 0, 0 };
     glm::vec2 WorldMousePos = { 0, 0 };
