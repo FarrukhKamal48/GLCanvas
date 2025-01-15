@@ -1,5 +1,6 @@
 #pragma once
 #include <GLBox.h>
+#include "GLCanvas/Cards/CardManager.h"
 
 namespace Canvas {
 
@@ -16,6 +17,7 @@ namespace State {
 
 struct CanvasData {
     OrthoCameraController* Camera;
+    CardManager* Cardmanager;
     int32_t HoveredCardID = -1;
     glm::vec2 ViewportSize = { 0, 0 };
     glm::vec2 WorldMouseDelta = { 0, 0 };
