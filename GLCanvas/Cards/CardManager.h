@@ -15,7 +15,7 @@ public:
     void OnImGuiRender(); 
 
     template<typename... Args>
-    void AddCard(CardType type, Args... args) {
+    void AddCard(CardType type, Args&&... args) {
         switch (type) {
             case CardType::None: break;
             case CardType::ColorCard: {

@@ -15,8 +15,8 @@ CanvasManager::CanvasManager() {
     m_States[State::DraggCard] = new DraggCardState();
     m_States[m_ActiveState]->OnEnter();
 
-    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(0));
-    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(1));
+    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(0), glm::vec4(1,0,1,1));
+    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(1), glm::vec4(0,1,0,1));
 }
 
 CanvasManager::~CanvasManager() {
