@@ -21,6 +21,9 @@ public:
         else if (Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
             return State::DraggCard;
         }
+        if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
+            return State::CreateCard;
+        }
         return State::Idle;
     }
 };
