@@ -29,7 +29,7 @@ public:
         m_IsWindowFocused = ImGui::IsWindowFocused();
         
         if (ImGui::Button("New Color", ImVec2(ImGui::GetContentRegionAvail().x, m_ButtonHeight))) {
-            CVData().Cardmanager->AddCard(CardType::ColorCard, glm::vec3(m_MenuPos, 1.0f), glm::vec4(0,1,0,1));
+            CVData().Cardmanager->AddCard(CardType::ColorCard, glm::vec3(CVData().WorldMousePos, 1.0f), glm::vec4(0,1,0,1));
             m_ButtonClicked = true;
         }
 
