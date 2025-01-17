@@ -11,6 +11,7 @@ namespace State {
         Panning,
         DraggCard,
         DraggSelect,
+        CreateCard,
         MAX,
     };
 }

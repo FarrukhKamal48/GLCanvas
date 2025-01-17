@@ -8,16 +8,16 @@ CanvasData& CVData() { return s_CVData; }
 
 glm::vec2 ScreenToWorld(ImVec2 screenCoords) {
     return glm::vec2(
-        screenCoords.x/CVData().ViewportSize.x - 0.5f,
-        1.0f - screenCoords.y/CVData().ViewportSize.y - 0.5f
-    ) * CVData().Camera->GetBounds() + glm::vec2(CVData().Camera->GetCamera().GetPosition());
+        screenCoords.x/s_CVData.ViewportSize.x - 0.5f,
+        1.0f - screenCoords.y/s_CVData.ViewportSize.y - 0.5f
+    ) * s_CVData.Camera->GetBounds() + glm::vec2(s_CVData.Camera->GetCamera().GetPosition());
 }
 
 ImVec2 WorldToScreen(glm::vec2 worldCoords) {
     return glm::vec2(
-        0.5f + (worldCoords.x - CVData().Camera->GetCamera().GetPosition().x)/CVData().Camera->GetBounds().x,
-        0.5f - (worldCoords.y - CVData().Camera->GetCamera().GetPosition().y)/CVData().Camera->GetBounds().y
-    ) * CVData().ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - CVData().ViewportSize.y);
+        0.5f + (worldCoords.x - s_CVData.Camera->GetCamera().GetPosition().x)/s_CVData.Camera->GetBounds().x,
+        0.5f - (worldCoords.y - s_CVData.Camera->GetCamera().GetPosition().y)/s_CVData.Camera->GetBounds().y
+    ) * s_CVData.ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - s_CVData.ViewportSize.y);
 }
 
 }
