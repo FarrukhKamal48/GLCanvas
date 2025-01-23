@@ -9,9 +9,11 @@ namespace CardType {
     };
 }
 
+typedef uint32_t CardID;
+
 class Card {
 protected:
-    Card(CardKey type) : m_Type(type) {}
+    Card(CardKey type, CardID id) : m_Type(type), m_CardID(id) {}
 public:
     virtual ~Card() {}
     
@@ -23,4 +25,5 @@ public:
     virtual void SetZDepth(float zdepth) = 0;
 protected:
     CardKey m_Type;
+    CardID m_CardID;
 };
