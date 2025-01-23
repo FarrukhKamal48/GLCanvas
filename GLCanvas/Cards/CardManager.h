@@ -14,12 +14,11 @@ public:
     void OnUpdate(float dt); 
     void OnImGuiRender(); 
 
-    template<typename... Args>
-    void AddCard(CardType type, Args&&... args) {
+    void AddCard(CardKey type, const glm::vec3& pos) {
         switch (type) {
             case CardType::None: break;
             case CardType::ColorCard: {
-                m_Cards.push_back(new ColorCard(m_Cards.size(), args...)); 
+                m_Cards.push_back(new ColorCard(m_Cards.size(), pos)); 
                 break;
             }
         }

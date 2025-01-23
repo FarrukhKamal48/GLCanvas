@@ -16,8 +16,8 @@ CanvasManager::CanvasManager() {
     m_States[State::DraggCard] = new DraggCardState();
     m_States[State::CreateCard] = new CreateCardState();
 
-    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(0), glm::vec4(1,0,1,1));
-    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(1), glm::vec4(0,1,0,1));
+    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(0));
+    m_CardManger.AddCard(CardType::ColorCard, glm::vec3(1));
     
     m_States[m_ActiveState]->OnEnter();
 }
@@ -60,13 +60,13 @@ void CanvasManager::OnRender() { };
 void CanvasManager::OnImGuiRender() {
     CVData().WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
         - ImVec2(0, ImGui::GetWindowHeight() - CVData().ViewportSize.y);
-
+    
     ImGui::GetWindowDrawList()->AddCircleFilled(
         WorldToScreen(CVData().WorldMousePos), 
         10 / CVData().Camera->GetZoomLevel(), 
         IM_COL32(255, 255, 0, 255)
     );
-
+    
     m_States[m_ActiveState]->OnImGuiRender();
     m_CardManger.OnImGuiRender();
 }; 

@@ -1,14 +1,17 @@
 #pragma once
 #include <GLBox.h>
 
-enum class CardType {
-    None,
-    ColorCard
-};
+typedef uint32_t CardKey;
+namespace CardType {
+    enum : uint32_t {
+        None,
+        ColorCard
+    };
+}
 
 class Card {
 protected:
-    Card(CardType type) : m_Type(type) {}
+    Card(CardKey type) : m_Type(type) {}
 public:
     virtual ~Card() {}
     
@@ -19,5 +22,5 @@ public:
     virtual void Drag(glm::vec3 delta) = 0;
     virtual void SetZDepth(float zdepth) = 0;
 protected:
-    CardType m_Type;
+    CardKey m_Type;
 };

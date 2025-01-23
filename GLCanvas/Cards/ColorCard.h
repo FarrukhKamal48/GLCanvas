@@ -5,7 +5,7 @@
 
 class ColorCard : public Card {
 public: 
-    ColorCard(uint32_t cardID, const glm::vec3& pos, const glm::vec4& col) : Card(CardType::ColorCard), m_CardID(cardID) {
+    ColorCard(uint32_t cardID, const glm::vec3& pos) : Card(CardType::ColorCard), m_CardID(cardID) {
         m_ObjI = m_Allocator.AllocateObject(1, [](InstanceRenderer& renderer) {
             renderer.CreateShader("Assets/Shaders/Card.vert", 
                                   "Assets/Shaders/Card.frag");
@@ -13,7 +13,7 @@ public:
         m_Allocator[m_ObjI].position = pos;
         m_Allocator[m_ObjI].scale = glm::vec2(0.1);
         m_Allocator[m_ObjI].rotation = 0;
-        m_Allocator[m_ObjI].color = col;
+        m_Allocator[m_ObjI].color = glm::vec4(1,0.5,1,1);
         m_Allocator[m_ObjI].cardID = m_CardID;
     }
     ~ColorCard() {}
