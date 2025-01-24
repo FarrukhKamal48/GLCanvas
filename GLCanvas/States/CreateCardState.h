@@ -1,6 +1,7 @@
 #pragma once
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
+#include "imgui.h"
 
 namespace Canvas {
 
@@ -12,6 +13,7 @@ public:
     void OnEnter() override { 
         m_MenuPos = CVData().WorldMousePos; 
         m_DropdownFinished = false;
+        m_NewCardID = -1;
     }
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { } 
@@ -31,7 +33,8 @@ public:
         m_IsWindowFocused = ImGui::IsWindowFocused();
 
         for (CardKey newCardType = CardType::None; newCardType < CardType::MAX; newCardType++) {
-            std::stringstream buttonLabel;
+            static std::stringstream buttonLabel;
+            buttonLabel.clear();
             buttonLabel << "New Color Card " << newCardType << "###" << newCardType;
             
             if (m_IsMenuSticky) {
@@ -40,24 +43,26 @@ public:
                     m_DropdownFinished = true;
                 }
                 
-                static bool isNewCardCreated = false;
-                if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
-                    if (!isNewCardCreated) {
+                static bool canCreateCard = true;
+                if (ImGui::BeginDragDropSource()) {
+                    if (canCreateCard) {
                         m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
-                        isNewCardCreated = true;
+                        canCreateCard = false;
                     }
                     if (CVData().Cardmanager->IsValid(m_NewCardID)) {
                         CVData().Cardmanager->Get(m_NewCardID).Drag(glm::vec3(CVData().WorldMouseDelta, 0.0f));
                     }
+                    
+                    ImGui::EndDragDropSource();
                 }
-                else {
-                    isNewCardCreated = false;
+                if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+                    canCreateCard = true;
                 }
             }
             else {
                 if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_ButtonHeight)) || 
                     (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ImGui::IsItemHovered())) {
-                    CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
+                    m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
                     m_DropdownFinished = true;
                 }
             }
@@ -68,7 +73,8 @@ public:
     }
     void OnExit() override { } 
     StateKey GetNextState() override { 
-        if ((Input::MousePressed(Mouse::ButtonLeft) && !m_IsWindowFocused) || m_DropdownFinished) {
+        if ((Input::MousePressed(Mouse::ButtonLeft) && !m_IsWindowFocused) || m_DropdownFinished || 
+            (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt))) {
             return State::Idle;
         }
         return State::CreateCard;
@@ -78,7 +84,7 @@ private:
     bool m_IsWindowFocused = true;
     bool m_DropdownFinished = false;
     const float m_ButtonHeight = 30;
-    CardID m_NewCardID = -1;
+    int32_t m_NewCardID = -1;
 
     bool m_IsMenuSticky = true;
 };
