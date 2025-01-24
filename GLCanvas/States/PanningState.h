@@ -9,7 +9,7 @@ public:
     PanningState() : BaseState(State::Panning) {}
     ~PanningState() {}
     
-    void OnEnter() override { BASIC_LOG("Panning"); }
+    void OnEnter() override { }
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override {
         CVData().Camera->Translate(-glm::vec3(CVData().WorldMouseDelta, 0.0f));
