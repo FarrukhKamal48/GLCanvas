@@ -5,7 +5,8 @@ typedef uint32_t CardKey;
 namespace CardType {
     enum : uint32_t {
         None,
-        ColorCard
+        ColorCard,
+        MAX,
     };
 }
 
