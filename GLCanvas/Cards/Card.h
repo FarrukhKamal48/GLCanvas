@@ -10,6 +10,14 @@ namespace CardType {
     };
 }
 
+inline const char* CardTypeName(CardKey type) {
+    switch (type) {
+        case CardType::None : return "None Card";
+        case CardType::ColorCard : return "Color Card";
+    }
+    return "Unknown Card";
+}
+
 typedef uint32_t CardID;
 
 class Card {

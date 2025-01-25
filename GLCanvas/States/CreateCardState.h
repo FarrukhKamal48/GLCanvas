@@ -38,7 +38,7 @@ public:
 
         for (CardKey newCardType = CardType::None; newCardType < CardType::MAX; newCardType++) {
             std::stringstream buttonLabel;
-            buttonLabel << "New Color Card " << newCardType;
+            buttonLabel << "New " << CardTypeName(newCardType);
             
             if (m_IsMenuSticky) {
                 if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_Styling.ButtonHeight))) {
