@@ -1,7 +1,7 @@
 #pragma once
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
-#include "imgui.h"
+#include "GLCanvas/ImGuiHelper.h"
 
 namespace Canvas {
 
@@ -18,10 +18,14 @@ public:
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { } 
     void OnImGuiRender() override { 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.0f);
+        IM::PushStyleVar(ImGuiStyleVar_WindowRounding, m_Styling.WindowRounding);
+        IM::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, m_Styling.ButtonTextAlign);
+        IM::PushStyleVar(ImGuiStyleVar_FramePadding, m_Styling.FrameBadding);
+        IM::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,1));
         
         ImGui::SetNextWindowPos(WorldToScreen(m_MenuPos));
-        ImGui::SetNextWindowSize(ImVec2(200,250));
+        ImGui::SetNextWindowSize(m_Styling.WindowSize);
+        
         ImGui::Begin("###Card-Create", nullptr, 
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
@@ -33,12 +37,11 @@ public:
         m_IsWindowFocused = ImGui::IsWindowFocused();
 
         for (CardKey newCardType = CardType::None; newCardType < CardType::MAX; newCardType++) {
-            static std::stringstream buttonLabel;
-            buttonLabel.clear();
-            buttonLabel << "New Color Card " << newCardType << "###" << newCardType;
+            std::stringstream buttonLabel;
+            buttonLabel << "New Color Card " << newCardType;
             
             if (m_IsMenuSticky) {
-                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_ButtonHeight))) {
+                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_Styling.ButtonHeight))) {
                     m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
                     m_DropdownFinished = true;
                 }
@@ -60,16 +63,20 @@ public:
                 }
             }
             else {
-                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_ButtonHeight)) || 
+                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_Styling.ButtonHeight)) || 
                     (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ImGui::IsItemHovered())) {
                     m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
                     m_DropdownFinished = true;
                 }
             }
+            
+            IM::PushStyleColor(ImGuiCol_Separator, ImVec4(0.4,0.4,0.4,1.0));
+            ImGui::Separator();
+            IM::PopStyleColors();
         }
         
         ImGui::End();
-        ImGui::PopStyleVar();
+        IM::PopStyleVars();
     }
     void OnExit() override { } 
     StateKey GetNextState() override { 
@@ -83,10 +90,18 @@ private:
     glm::vec2 m_MenuPos = {0,0};
     bool m_IsWindowFocused = true;
     bool m_DropdownFinished = false;
-    const float m_ButtonHeight = 30;
     int32_t m_NewCardID = -1;
 
     bool m_IsMenuSticky = true;
+    struct Styling {
+        float WindowRounding = 5.0f;
+        ImVec2 WindowSize = {200,250};
+        float ButtonHeight = 30;
+        ImVec2 ButtonTextAlign = {0.0,0.5};
+        ImVec2 FrameBadding = {10,0};
+    };
+    Styling m_Styling;
+
 };
 
 }
