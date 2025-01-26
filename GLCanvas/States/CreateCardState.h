@@ -18,10 +18,11 @@ public:
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { } 
     void OnImGuiRender() override { 
-        IM::PushStyleVar(ImGuiStyleVar_WindowRounding, m_Styling.WindowRounding);
-        IM::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, m_Styling.ButtonTextAlign);
-        IM::PushStyleVar(ImGuiStyleVar_FramePadding, m_Styling.FrameBadding);
-        IM::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,1));
+        IM::BeginStyleVars();
+        IM::StyleVar(ImGuiStyleVar_WindowRounding, m_Styling.WindowRounding);
+        IM::StyleVar(ImGuiStyleVar_ButtonTextAlign, m_Styling.ButtonTextAlign);
+        IM::StyleVar(ImGuiStyleVar_FramePadding, m_Styling.FrameBadding);
+        IM::StyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,1));
         
         ImGui::SetNextWindowPos(m_MenuPos);
         
@@ -69,13 +70,14 @@ public:
                 }
             }
             
-            IM::PushStyleColor(ImGuiCol_Separator, ImVec4(0.4,0.4,0.4,1.0));
+            IM::BeginStyleColors();
+            IM::StyleColor(ImGuiCol_Separator, ImVec4(0.4,0.4,0.4,1.0));
             ImGui::Separator();
-            IM::PopStyleColors();
+            IM::EndStyleColors();
         }
         
         ImGui::End();
-        IM::PopStyleVars();
+        IM::EndStyleVars();
     }
     void OnExit() override { } 
     StateKey GetNextState() override { 

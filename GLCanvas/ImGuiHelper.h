@@ -3,35 +3,42 @@
 
 namespace IM {
 
-static int32_t styleVarCount = 0;
-static int32_t styleColCount = 0;
+static std::vector<int32_t> styleVarCounts = {};
+static std::vector<int32_t> styleColCounts = {};
 
-inline void PushStyleVar(ImGuiStyleVar idx, const ImVec2& val) {
-    styleVarCount++;
+inline void BeginStyleVars() {
+    styleVarCounts.emplace_back(0);
+}
+inline void StyleVar(ImGuiStyleVar idx, const ImVec2& val) {
+    styleVarCounts.back()++;
     ImGui::PushStyleVar(idx, val);
 }
-inline void PushStyleVar(ImGuiStyleVar idx, float val) {
-    styleVarCount++;
+inline void StyleVar(ImGuiStyleVar idx, float val) {
+    styleVarCounts.back()++;
     ImGui::PushStyleVar(idx, val);
 }
-inline void PopStyleVars() {
-    ImGui::PopStyleVar(styleVarCount);
-    styleVarCount = 0;
+inline void EndStyleVars() {
+    ImGui::PopStyleVar(styleVarCounts.back());
+    styleVarCounts.pop_back();
 }
 
-inline void PushStyleColor(ImGuiCol idx, ImU32 col) {
-    styleColCount++;
+
+inline void BeginStyleColors() {
+    styleColCounts.emplace_back(0);
+}
+inline void StyleColor(ImGuiCol idx, ImU32 col) {
+    styleColCounts.back()++;
     ImGui::PushStyleColor(idx, col);
 }
 
-inline void PushStyleColor(ImGuiCol idx, const ImVec4& col) {
-    styleColCount++;
+inline void StyleColor(ImGuiCol idx, const ImVec4& col) {
+    styleColCounts.back()++;
     ImGui::PushStyleColor(idx, col);
 }
 
-inline void PopStyleColors() {
-    ImGui::PopStyleColor(styleColCount);
-    styleColCount = 0;
+inline void EndStyleColors() {
+    ImGui::PopStyleColor(styleColCounts.back());
+    styleColCounts.pop_back();
 }
 
 }

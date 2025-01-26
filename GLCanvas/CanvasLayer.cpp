@@ -44,7 +44,8 @@ void CanvasLayer::OnRender() {
 
 void CanvasLayer::OnImGuiRender() {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
+    IM::BeginStyleVars();
+    IM::StyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
     
     ImGui::Begin("Canvas");
     {
@@ -65,7 +66,7 @@ void CanvasLayer::OnImGuiRender() {
     }
     ImGui::End();
     
-    ImGui::PopStyleVar();
+    IM::EndStyleVars();
     m_Framebuffer.UnBind();
 }
 
