@@ -14,6 +14,12 @@ void CardManager::OnImGuiRender() {
     for (Card* card : m_Cards) {
         card->OnImGuiRender();
     }
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CREATE_CARD_BOOL")) {
+            **(bool**)(payload->Data) = true;
+        }
+        ImGui::EndDragDropTarget();
+    }
 } 
 
 uint32_t CardManager::AddCard(CardKey type, const glm::vec3& pos) {

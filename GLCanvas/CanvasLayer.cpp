@@ -43,11 +43,48 @@ void CanvasLayer::OnRender() {
 }
 
 void CanvasLayer::OnImGuiRender() {
-    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
+    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_AutoHideTabBar);
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
+    
+    ImGui::SetNextWindowSize(ImVec2(100, 540));
+    IM::BeginStyleVars();
+    IM::StyleVar(ImGuiStyleVar_WindowPadding, ImVec2(2.5,5.0));
+    IM::StyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+    IM::StyleVar(ImGuiStyleVar_FrameRounding, 5);
+    
+    ImGui::Begin("Cards", nullptr, windowFlags); 
+    {
+        float dims = std::min(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+        for (CardKey type = CardType::None; type < CardType::COUNT; type++) {
+            std::stringstream buttonLabel;
+            buttonLabel << Card::TypeName(type);
+            ImGui::Button(buttonLabel.str().c_str(), ImVec2(dims, dims));
+            
+            static bool canCreateCard = true;
+            static bool* payloadPtr = &canCreateCard;
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoPreviewTooltip | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+                if (canCreateCard) {
+                    Canvas::CVData().HoveredCardID = 
+                        Canvas::CVData().Cardmanager->AddCard(type, glm::vec3(Canvas::CVData().WorldMousePos, 1.0f));
+                    if (Canvas::CVData().Cardmanager->IsValid(Canvas::CVData().HoveredCardID)) {
+                        m_CanvasManager.TransitionTo(Canvas::StateType::DraggCard);
+                    }
+                    canCreateCard = false;
+                }
+                ImGui::SetDragDropPayload("CREATE_CARD_BOOL", &payloadPtr, sizeof(payloadPtr));
+                ImGui::EndDragDropSource();
+            }
+        }
+    }
+    ImGui::End();
+    IM::EndStyleVars();
+    
+    ImGui::SetNextWindowSize(ImVec2(960, 540));
     IM::BeginStyleVars();
     IM::StyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
+    IM::StyleVar(ImGuiStyleVar_WindowBorderSize, 0);
     
-    ImGui::Begin("Canvas");
+    ImGui::Begin("Canvas", nullptr, windowFlags);
     {
         ImVec2 viewportSize = ImGui::GetContentRegionAvail();
         if (Canvas::CVData().ViewportSize != viewportSize) {
@@ -59,14 +96,8 @@ void CanvasLayer::OnImGuiRender() {
         m_CanvasManager.OnImGuiRender();
     }
     ImGui::End();
-
-    ImGui::Begin("Drawer", nullptr, ImGuiWindowFlags_NoTitleBar); 
-    {
-        ImGui::Button("Press");
-    }
-    ImGui::End();
-    
     IM::EndStyleVars();
+    
     m_Framebuffer.UnBind();
 }
 
