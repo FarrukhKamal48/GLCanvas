@@ -12,9 +12,14 @@ public:
     void OnEnter() override { }
     void OnEvent(Event& event) override { } 
     void OnUpdate(float dt) override { } 
-    void OnImGuiRender() override { }
+    void OnImGuiRender() override {
+        m_IsCanvasHovered = ImGui::IsWindowHovered();
+    }
     void OnExit() override { } 
     StateKey GetNextState() override { 
+        if (!m_IsCanvasHovered)
+            return StateType::Idle;
+        
         if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
             return StateType::Panning;
         }
@@ -26,6 +31,8 @@ public:
         }
         return StateType::Idle;
     }
+private:
+    bool m_IsCanvasHovered = false;
 };
 
 }
