@@ -24,6 +24,7 @@ struct CanvasData {
     glm::vec2 WorldMouseDelta = { 0, 0 };
     glm::vec2 WorldMousePos = { 0, 0 };
     ImVec2 WindowMousePos = { 0, 0 };
+    ImVec2 ImGuiMousePos = { 0, 0 };
 };
 CanvasData& CVData();
 glm::vec2 ScreenToWorld(ImVec2 screenCoords);

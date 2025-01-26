@@ -55,6 +55,7 @@ void CanvasManager::OnRender() { };
 void CanvasManager::OnImGuiRender() {
     CVData().WindowMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos() 
         - ImVec2(0, ImGui::GetWindowHeight() - CVData().ViewportSize.y);
+    CVData().ImGuiMousePos = ImGui::GetMousePos();
     
     ImGui::GetWindowDrawList()->AddCircleFilled(
         WorldToScreen(CVData().WorldMousePos), 
