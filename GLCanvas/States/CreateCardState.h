@@ -2,7 +2,6 @@
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
 #include "GLCanvas/ImGuiHelper.h"
-#include "GLCanvas/ImVec2Defines.h"
 
 namespace Canvas {
 
