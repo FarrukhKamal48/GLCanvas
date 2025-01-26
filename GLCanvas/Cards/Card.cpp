@@ -1,11 +1,16 @@
 #include "GLCanvas/Cards/Card.h"
 #include "GLCanvas/Cards/ColorCard.h"
 
+static const char* CardTypeTOName[CardType::COUNT] = {
+    "None Card",
+    "Color Card",
+};
+
 const char* Card::TypeName(CardKey type) {
-    switch (type) {
-        case CardType::ColorCard : return "Color Card";
+    if (type == CardType::COUNT) {
+        return "Unknown Card";
     }
-    return "Unknown Card";
+    return CardTypeTOName[type];
 }
 
 Card* Card::Create(CardKey type, CardID cardID, const glm::vec3& pos) {
