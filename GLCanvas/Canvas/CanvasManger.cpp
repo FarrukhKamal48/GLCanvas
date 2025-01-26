@@ -1,20 +1,15 @@
 #include "GLCanvas/ImVec2Defines.h"
 #include "GLCanvas/Canvas/CanvasManager.h"
 
-#include "GLCanvas/States/IdleState.h"
-#include "GLCanvas/States/PanningState.h"
-#include "GLCanvas/States/DraggCardState.h"
-#include "GLCanvas/States/CreateCardState.h"
-
 namespace Canvas {
 
 CanvasManager::CanvasManager() {
     CVData().Cardmanager = &m_CardManger;
-    m_States.reserve(State::MAX);
-    m_States[State::Idle] = new IdleState();
-    m_States[State::Panning] = new PanningState();
-    m_States[State::DraggCard] = new DraggCardState();
-    m_States[State::CreateCard] = new CreateCardState();
+    
+    m_States.reserve(StateType::COUNT);
+    for (StateKey type = StateType::Idle; type < StateType::COUNT; type++) {
+        m_States[type] = State::Create(type);
+    }
 
     m_CardManger.AddCard(CardType::ColorCard, glm::vec3(0));
     m_CardManger.AddCard(CardType::ColorCard, glm::vec3(1));
@@ -23,7 +18,7 @@ CanvasManager::CanvasManager() {
 }
 
 CanvasManager::~CanvasManager() {
-    for (BaseState* state : m_States) {
+    for (State* state : m_States) {
         delete state;
     }
 }

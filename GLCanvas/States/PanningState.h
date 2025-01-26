@@ -4,9 +4,9 @@
 
 namespace Canvas {
 
-class PanningState : public BaseState {
+class PanningState : public State {
 public:
-    PanningState() : BaseState(State::Panning) {}
+    PanningState() : State(StateType::Panning) {}
     ~PanningState() {}
     
     void OnEnter() override { }
@@ -18,8 +18,8 @@ public:
     void OnExit() override { } 
     StateKey GetNextState() override { 
         if (Input::MouseReleased(Mouse::ButtonLeft) || Input::KeyReleased(Key::LeftAlt))
-            return State::Idle;
-        return State::Panning;
+            return StateType::Idle;
+        return StateType::Panning;
     }
 };
 

@@ -1,5 +1,10 @@
-#include "GLCanvas/Canvas/Canvas.h"
 #include "GLCanvas/ImVec2Defines.h"
+#include "GLCanvas/Canvas/Canvas.h"
+
+#include "GLCanvas/States/IdleState.h"
+#include "GLCanvas/States/PanningState.h"
+#include "GLCanvas/States/DraggCardState.h"
+#include "GLCanvas/States/CreateCardState.h"
 
 namespace Canvas {
 static CanvasData s_CVData;
@@ -18,6 +23,17 @@ ImVec2 WorldToScreen(glm::vec2 worldCoords) {
         0.5f + (worldCoords.x - s_CVData.Camera->GetCamera().GetPosition().x)/s_CVData.Camera->GetBounds().x,
         0.5f - (worldCoords.y - s_CVData.Camera->GetCamera().GetPosition().y)/s_CVData.Camera->GetBounds().y
     ) * s_CVData.ViewportSize + ImGui::GetWindowPos() + glm::vec2(0, ImGui::GetWindowHeight() - s_CVData.ViewportSize.y);
+}
+
+State* State::Create(StateKey type) {
+    switch (type) {
+        case StateType::Idle: return new IdleState();
+        case StateType::Panning: return new PanningState();
+        case StateType::DraggCard: return new DraggCardState();
+        // case StateType::DraggSelect: return nullptr;
+        case StateType::CreateCard: return new CreateCardState();
+    }
+    return nullptr;
 }
 
 }

@@ -4,9 +4,9 @@
 
 namespace Canvas {
 
-class DraggCardState : public BaseState {
+class DraggCardState : public State {
 public:
-    DraggCardState() : BaseState(State::DraggCard) {}
+    DraggCardState() : State(StateType::DraggCard) {}
     ~DraggCardState() {}
     
     void OnEnter() override { 
@@ -27,8 +27,8 @@ public:
     } 
     StateKey GetNextState() override { 
         if (Input::MouseReleased(Mouse::ButtonLeft) || Input::KeyPressed(Key::LeftAlt))
-            return State::Idle;
-        return State::DraggCard;
+            return StateType::Idle;
+        return StateType::DraggCard;
     }
 private:
     int32_t m_CurrCardID = -1;

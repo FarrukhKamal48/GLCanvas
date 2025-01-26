@@ -5,14 +5,14 @@
 namespace Canvas {
 
 typedef uint32_t StateKey;
-namespace State {
+namespace StateType {
     enum : StateKey {
         Idle,
         Panning,
         DraggCard,
-        DraggSelect,
+        // DraggSelect,
         CreateCard,
-        MAX,
+        COUNT,
     };
 }
 
@@ -29,11 +29,11 @@ CanvasData& CVData();
 glm::vec2 ScreenToWorld(ImVec2 screenCoords);
 ImVec2 WorldToScreen(glm::vec2 worldCoords);
 
-class BaseState {
+class State {
 protected:
-    BaseState(StateKey state) : m_State(state) {}
+    State(StateKey state) : m_State(state) {}
 public:
-    virtual ~BaseState() {}
+    virtual ~State() {}
     const StateKey GetState() { return m_State; }
     virtual void OnEnter() = 0;
     virtual void OnEvent(Event& event) = 0;
@@ -41,6 +41,8 @@ public:
     virtual void OnExit() = 0;
     virtual void OnImGuiRender() = 0;
     virtual StateKey GetNextState() = 0;
+
+    static State* Create(StateKey type);
 protected:
     const StateKey m_State;
 };

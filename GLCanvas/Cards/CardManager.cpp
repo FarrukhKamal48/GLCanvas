@@ -1,5 +1,4 @@
 #include "GLCanvas/Cards/CardManager.h"
-#include "GLCanvas/Cards/ColorCard.h"
 
 void CardManager::OnEvent(Event& event) {
     for (Card* card : m_Cards) {
@@ -18,14 +17,11 @@ void CardManager::OnImGuiRender() {
 } 
 
 uint32_t CardManager::AddCard(CardKey type, const glm::vec3& pos) {
-    switch (type) {
-        case CardType::None: return -1;
-        case CardType::ColorCard: {
-            m_Cards.push_back(new ColorCard(m_Cards.size(), pos)); 
-            return m_Cards.size()-1;
-        }
-    }
-    return -1;
+    if (type == CardType::None)
+        return -1;
+
+    m_Cards.push_back(Card::Create(type, m_Cards.size(), pos));
+    return m_Cards.size()-1;
 }
 
 void CardManager::RemoveCard(CardID cardID) {

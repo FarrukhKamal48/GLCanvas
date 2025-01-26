@@ -4,9 +4,9 @@
 
 namespace Canvas {
 
-class IdleState : public BaseState {
+class IdleState : public State {
 public:
-    IdleState() : BaseState(State::Idle) {}
+    IdleState() : State(StateType::Idle) {}
     ~IdleState() {}
     
     void OnEnter() override { }
@@ -16,15 +16,15 @@ public:
     void OnExit() override { } 
     StateKey GetNextState() override { 
         if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
-            return State::Panning;
+            return StateType::Panning;
         }
         else if (Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
-            return State::DraggCard;
+            return StateType::DraggCard;
         }
         if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
-            return State::CreateCard;
+            return StateType::CreateCard;
         }
-        return State::Idle;
+        return StateType::Idle;
     }
 };
 

@@ -6,16 +6,8 @@ namespace CardType {
     enum : uint32_t {
         None,
         ColorCard,
-        MAX,
+        COUNT,
     };
-}
-
-inline const char* CardTypeName(CardKey type) {
-    switch (type) {
-        case CardType::None : return "None Card";
-        case CardType::ColorCard : return "Color Card";
-    }
-    return "Unknown Card";
 }
 
 typedef uint32_t CardID;
@@ -32,6 +24,9 @@ public:
 
     virtual void Drag(glm::vec3 delta) = 0;
     virtual void SetZDepth(float zdepth) = 0;
+    
+    static const char* TypeName(CardKey type);
+    static Card* Create(CardKey type, CardID cardID, const glm::vec3& pos);
 protected:
     CardKey m_Type;
     CardID m_CardID;

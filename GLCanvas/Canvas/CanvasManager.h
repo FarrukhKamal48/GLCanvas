@@ -15,8 +15,8 @@ public:
     void OnRender(); 
     void OnImGuiRender(); 
 private:
-    std::vector<BaseState*> m_States;
-    StateKey m_ActiveState = State::Idle;
+    std::vector<State*> m_States;
+    StateKey m_ActiveState = StateType::Idle;
     bool m_IsTransitioning = false;
 
     CardManager m_CardManger;

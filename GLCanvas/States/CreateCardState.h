@@ -5,9 +5,9 @@
 
 namespace Canvas {
 
-class CreateCardState : public BaseState {
+class CreateCardState : public State {
 public:
-    CreateCardState() : BaseState(State::CreateCard) {}
+    CreateCardState() : State(StateType::CreateCard) {}
     ~CreateCardState() {}
     
     void OnEnter() override { 
@@ -36,9 +36,9 @@ public:
         
         m_IsWindowFocused = ImGui::IsWindowFocused();
 
-        for (CardKey newCardType = CardType::None; newCardType < CardType::MAX; newCardType++) {
+        for (CardKey newCardType = CardType::None; newCardType < CardType::COUNT; newCardType++) {
             std::stringstream buttonLabel;
-            buttonLabel << "New " << CardTypeName(newCardType);
+            buttonLabel << "New " << Card::TypeName(newCardType);
             
             if (m_IsMenuSticky) {
                 if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_Styling.ButtonHeight))) {
@@ -82,9 +82,9 @@ public:
     StateKey GetNextState() override { 
         if ((Input::MousePressed(Mouse::ButtonLeft) && !m_IsWindowFocused) || m_DropdownFinished || 
             (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt))) {
-            return State::Idle;
+            return StateType::Idle;
         }
-        return State::CreateCard;
+        return StateType::CreateCard;
     }
 private:
     glm::vec2 m_MenuPos = {0,0};
