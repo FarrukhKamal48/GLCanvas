@@ -2,13 +2,13 @@
 #include "GLCanvas/Cards/ColorCard.h"
 
 static const char* CardTypeTOName[CardType::COUNT] = {
-    "None Card",
-    "Color Card",
+    "None",
+    "Color",
 };
 
 const char* Card::TypeName(CardKey type) {
     if (type == CardType::COUNT) {
-        return "Unknown Card";
+        return "Unknown";
     }
     return CardTypeTOName[type];
 }
