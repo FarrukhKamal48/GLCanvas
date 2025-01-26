@@ -2,6 +2,7 @@
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
 #include "GLCanvas/ImGuiHelper.h"
+#include "GLCanvas/ImVec2Defines.h"
 
 namespace Canvas {
 
@@ -11,7 +12,7 @@ public:
     ~CreateCardState() {}
     
     void OnEnter() override { 
-        m_MenuPos = CVData().WorldMousePos; 
+        m_MenuPos = CVData().ImGuiMousePos; 
         m_DropdownFinished = false;
         m_NewCardID = -1;
     }
@@ -23,8 +24,7 @@ public:
         IM::PushStyleVar(ImGuiStyleVar_FramePadding, m_Styling.FrameBadding);
         IM::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,1));
         
-        ImGui::SetNextWindowPos(WorldToScreen(m_MenuPos));
-        ImGui::SetNextWindowSize(m_Styling.WindowSize);
+        ImGui::SetNextWindowPos(m_MenuPos);
         
         ImGui::Begin("###Card-Create", nullptr, 
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
@@ -41,7 +41,7 @@ public:
             buttonLabel << "New " << Card::TypeName(newCardType);
             
             if (m_IsMenuSticky) {
-                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_Styling.ButtonHeight))) {
+                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(m_Styling.WindowWidth, m_Styling.ButtonHeight))) {
                     m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
                     m_DropdownFinished = true;
                 }
@@ -63,7 +63,7 @@ public:
                 }
             }
             else {
-                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, m_Styling.ButtonHeight)) || 
+                if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(m_Styling.WindowWidth, m_Styling.ButtonHeight)) || 
                     (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ImGui::IsItemHovered())) {
                     m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
                     m_DropdownFinished = true;
@@ -87,7 +87,7 @@ public:
         return StateType::CreateCard;
     }
 private:
-    glm::vec2 m_MenuPos = {0,0};
+    ImVec2 m_MenuPos = {0,0};
     bool m_IsWindowFocused = true;
     bool m_DropdownFinished = false;
     int32_t m_NewCardID = -1;
@@ -95,7 +95,7 @@ private:
     bool m_IsMenuSticky = true;
     struct Styling {
         float WindowRounding = 5.0f;
-        ImVec2 WindowSize = {200,250};
+        float WindowWidth = 200;
         float ButtonHeight = 30;
         ImVec2 ButtonTextAlign = {0.0,0.5};
         ImVec2 FrameBadding = {10,0};
