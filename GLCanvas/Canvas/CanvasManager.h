@@ -14,6 +14,8 @@ public:
     void OnUpdate(float dt); 
     void OnRender(); 
     void OnImGuiRender(); 
+
+    void TransitionTo(StateKey nextState);
 private:
     std::vector<State*> m_States;
     StateKey m_ActiveState = StateType::Idle;

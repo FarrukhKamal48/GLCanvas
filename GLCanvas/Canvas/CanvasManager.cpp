@@ -35,14 +35,10 @@ void CanvasManager::OnUpdate(float dt) {
     CVData().WorldMouseDelta = CVData().WorldMousePos - glm::vec2(CVData().Camera->GetCamera().GetPosition()) - lastPos;
     lastPos = CVData().WorldMousePos - glm::vec2(CVData().Camera->GetCamera().GetPosition());
     
-    static StateKey m_NextState;
-    m_NextState = m_States[m_ActiveState]->GetNextState();
-    if (!m_IsTransitioning && m_ActiveState != m_NextState) {
-        m_IsTransitioning = true;
-        m_States[m_ActiveState]->OnExit();
-        m_ActiveState = m_NextState;
-        m_States[m_ActiveState]->OnEnter();
-        m_IsTransitioning = false;
+    static StateKey nextState;
+    nextState = m_States[m_ActiveState]->GetNextState();
+    if (!m_IsTransitioning && m_ActiveState != nextState) {
+        TransitionTo(nextState);
     }
     else if (!m_IsTransitioning) {
         m_States[m_ActiveState]->OnUpdate(dt);
@@ -66,5 +62,13 @@ void CanvasManager::OnImGuiRender() {
     m_States[m_ActiveState]->OnImGuiRender();
     m_CardManger.OnImGuiRender();
 }; 
+
+void CanvasManager::TransitionTo(StateKey nextState) {
+    m_IsTransitioning = true;
+    m_States[m_ActiveState]->OnExit();
+    m_ActiveState = nextState;
+    m_States[m_ActiveState]->OnEnter();
+    m_IsTransitioning = false;
+}
 
 }
