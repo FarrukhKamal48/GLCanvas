@@ -44,7 +44,7 @@ void CanvasLayer::OnRender() {
 
 void CanvasLayer::OnImGuiRender() {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_AutoHideTabBar);
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoCollapse;
     
     ImGui::SetNextWindowSize(ImVec2(100, 540));
     IM::BeginStyleVars();
