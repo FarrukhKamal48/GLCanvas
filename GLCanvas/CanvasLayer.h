@@ -6,7 +6,7 @@
 
 class CanvasLayer : public Layer {
 private:
-    OrthoCameraController m_CameraController;
+    CanvasCameraController m_CameraController;
     FrameBuffer m_Framebuffer;
     Canvas::CanvasManager m_CanvasManager;
 public:
