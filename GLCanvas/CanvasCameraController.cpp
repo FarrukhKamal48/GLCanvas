@@ -4,9 +4,7 @@
 void CanvasCameraController::OnEvent(Event& event) {
     EventDispacher dispatcher(event);
     dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
-    if (!m_Paused) {
-        dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(OnMouseScroll));
-    }
+    dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(OnMouseScroll));
 }
 
 void CanvasCameraController::OnResize(uint32_t width, uint32_t height) {
@@ -15,6 +13,9 @@ void CanvasCameraController::OnResize(uint32_t width, uint32_t height) {
 }
 
 void CanvasCameraController::OnUpdate(float dt) {
+    if (m_Paused) {
+        return;
+    }
     if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
         m_Camera.SetPosition(m_Camera.GetPosition() 
                              - glm::vec3(Canvas::CVData().WorldMouseDelta, 0.0f));
@@ -22,9 +23,10 @@ void CanvasCameraController::OnUpdate(float dt) {
 }
 
 void CanvasCameraController::Translate(const glm::vec3& translation) { 
-    if (!m_Paused) {
-        m_Camera.SetPosition(m_Camera.GetPosition() + translation); 
+    if (m_Paused) {
+        return;
     }
+    m_Camera.SetPosition(m_Camera.GetPosition() + translation); 
 }
 
 bool CanvasCameraController::OnWindowResize(WindowResizeEvent& event) {
@@ -32,6 +34,9 @@ bool CanvasCameraController::OnWindowResize(WindowResizeEvent& event) {
     return false;
 }
 bool CanvasCameraController::OnMouseScroll(MouseScrolledEvent& event) {
+    if (m_Paused) {
+        return false;
+    }
     m_ZoomLevel -= event.GetYOffset() * 0.05f;
     m_ZoomLevel = std::max(0.1f, m_ZoomLevel);
     m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
