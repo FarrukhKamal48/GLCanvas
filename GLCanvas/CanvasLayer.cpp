@@ -5,14 +5,16 @@
 
 CanvasLayer::CanvasLayer() 
     : Layer("Canvas Layer")
-    , m_CameraController(16.0f/9.0f, 1.0f) 
+    , m_CameraController(16.0f/9.0f, 1.0f, false) 
 {
     FBSpec spec;
     spec.Width = 1920;
     spec.Height = 1080;
     spec.Attachments = { FBTextureFormat::RGBA8, FBTextureFormat::RED_INTEGER, FBTextureFormat::DEPTH24STENCIL8 };
     m_Framebuffer = FrameBuffer(spec);
+    
     Canvas::CVData().Camera = &m_CameraController;
+    Application::Get().GetImGuiLayer().SetBlockEvents(false);
 }
 CanvasLayer::~CanvasLayer() { }
 
