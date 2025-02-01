@@ -15,10 +15,7 @@ public:
     void OnImGuiRender() override { }
     void OnExit() override { } 
     StateKey GetNextState() override { 
-        if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
-            return StateType::Panning;
-        }
-        else if (Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
+        if (!Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
             return StateType::DraggCard;
         }
         if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {

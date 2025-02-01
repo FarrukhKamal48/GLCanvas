@@ -35,6 +35,7 @@ void CanvasLayer::OnUpdate(float dt) {
     my = Canvas::CVData().ViewportSize.y - my;
     Canvas::CVData().HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
 
+    m_CameraController.OnUpdate(dt);
     m_CanvasManager.OnUpdate(dt);
 }
 

@@ -1,4 +1,5 @@
 #include "GLCanvas/CanvasCameraController.h"
+#include "Canvas/Canvas.h"
 
 void CanvasCameraController::OnEvent(Event& event) {
     EventDispacher dispatcher(event);
@@ -11,6 +12,13 @@ void CanvasCameraController::OnEvent(Event& event) {
 void CanvasCameraController::OnResize(uint32_t width, uint32_t height) {
     m_AspectRatio = (float)width / height;
     m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+}
+
+void CanvasCameraController::OnUpdate(float dt) {
+    if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
+        m_Camera.SetPosition(m_Camera.GetPosition() 
+                             - glm::vec3(Canvas::CVData().WorldMouseDelta, 0.0f));
+    }
 }
 
 void CanvasCameraController::Translate(const glm::vec3& translation) { 

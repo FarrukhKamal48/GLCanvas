@@ -10,6 +10,7 @@ public:
 
     void OnEvent(Event& event);
     void OnResize(uint32_t width, uint32_t height);
+    void OnUpdate(float dt);
     
     void Translate(const glm::vec3& translation);
     void Pause(bool paused) { m_Paused = paused; }
