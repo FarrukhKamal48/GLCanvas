@@ -95,6 +95,10 @@ void CanvasLayer::OnImGuiRender() {
             m_CameraController.OnResize(viewportSize.x, viewportSize.y);
             m_Framebuffer.Resize(viewportSize.x, viewportSize.y);
         }
+        m_CanvasActive = IM::IsWindowHovered();
+        m_CameraController.Lock(!m_CanvasActive);
+        m_CanvasManager.Lock(!m_CanvasActive);
+        
         ImGui::Image(m_Framebuffer.GetColorAttachment(), viewportSize, ImVec2(0,1), ImVec2(1,0));
         m_CanvasManager.OnImGuiRender();
     }

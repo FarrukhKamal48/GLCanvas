@@ -19,5 +19,5 @@ public:
     void OnRender() override; 
     void OnImGuiRender() override; 
 private:
-    glm::vec2 Lerp(glm::vec2 a, glm::vec2 b, float p);
+    bool m_CanvasActive = true;
 };
