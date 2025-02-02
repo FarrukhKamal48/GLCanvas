@@ -16,10 +16,12 @@ public:
     void OnImGuiRender(); 
 
     void TransitionTo(StateKey nextState);
+    void Lock(bool locked) { m_IsLocked = locked; }
 private:
     std::vector<State*> m_States;
     StateKey m_ActiveState = StateType::Idle;
     bool m_IsTransitioning = false;
+    bool m_IsLocked = false;
 
     CardManager m_CardManger;
 };

@@ -37,10 +37,12 @@ void CanvasManager::OnUpdate(float dt) {
     
     static StateKey nextState;
     nextState = m_States[m_ActiveState]->GetNextState();
-    if (!m_IsTransitioning && m_ActiveState != nextState) {
+    static bool transitionInLock; 
+    transitionInLock = (m_ActiveState != StateType::Idle && nextState == StateType::Idle);
+    if ((!m_IsLocked && m_ActiveState != nextState) || transitionInLock) {
         TransitionTo(nextState);
     }
-    else if (!m_IsTransitioning) {
+    else {
         m_States[m_ActiveState]->OnUpdate(dt);
     }
     m_CardManger.OnUpdate(dt);

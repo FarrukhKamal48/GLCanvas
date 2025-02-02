@@ -13,7 +13,7 @@ void CanvasCameraController::OnResize(uint32_t width, uint32_t height) {
 }
 
 void CanvasCameraController::OnUpdate(float dt) {
-    if (m_Paused) {
+    if (m_IsLocked) {
         return;
     }
     if (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt)) {
@@ -23,7 +23,7 @@ void CanvasCameraController::OnUpdate(float dt) {
 }
 
 void CanvasCameraController::Translate(const glm::vec3& translation) { 
-    if (m_Paused) {
+    if (m_IsLocked) {
         return;
     }
     m_Camera.SetPosition(m_Camera.GetPosition() + translation); 
@@ -34,7 +34,7 @@ bool CanvasCameraController::OnWindowResize(WindowResizeEvent& event) {
     return false;
 }
 bool CanvasCameraController::OnMouseScroll(MouseScrolledEvent& event) {
-    if (m_Paused) {
+    if (m_IsLocked) {
         return false;
     }
     m_ZoomLevel -= event.GetYOffset() * 0.05f;
