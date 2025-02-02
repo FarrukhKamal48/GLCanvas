@@ -74,7 +74,7 @@ inline void EndStyleColors() {
     styleColCounts.pop_back();
 }
 
-inline bool IsWindowHovered() {
+inline bool IsMouseOverWindow() {
     ImVec2 windowPos = ImGui::GetWindowPos();
     ImVec2 mousePos = ImGui::GetMousePos();
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
