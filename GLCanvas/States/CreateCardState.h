@@ -1,7 +1,7 @@
 #pragma once
 #include <GLBox.h>
 #include "GLCanvas/Canvas/Canvas.h"
-#include "GLCanvas/ImGuiHelper.h"
+#include "GLCanvas/Base.h"
 #include "imgui.h"
 
 namespace Canvas {

@@ -32,6 +32,11 @@ inline ImVec2 operator*(ImVec2 A, int val) { return {A.x*val, A.y*val}; }
 inline ImVec2 operator/(ImVec2 A, float val) { return {A.x/val, A.y/val}; }
 inline ImVec2 operator/(ImVec2 A, int val) { return {A.x/val, A.y/val}; }
 
+template<typename T>
+T Lerp(const T& A, const T& B, float t) {
+    return A + (B - A) * t;
+}
+
 
 namespace IM {
 

@@ -1,4 +1,4 @@
-#include "GLCanvas/ImGuiHelper.h"
+#include "GLCanvas/Base.h"
 #include "GLCanvas/Canvas/Canvas.h"
 
 #include "GLCanvas/States/IdleState.h"

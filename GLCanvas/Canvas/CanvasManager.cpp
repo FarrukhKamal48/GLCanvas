@@ -1,4 +1,4 @@
-#include "GLCanvas/ImGuiHelper.h"
+#include "GLCanvas/Base.h"
 #include "GLCanvas/Canvas/CanvasManager.h"
 
 namespace Canvas {

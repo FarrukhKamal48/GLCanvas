@@ -1,7 +1,7 @@
 #pragma once
 #include <GLBox.h>
 #include "GLCanvas/Cards/CardManager.h"
-#include "GLCanvas/CanvasCameraController.h"
+#include "GLCanvas/Canvas/CanvasCameraController.h"
 
 namespace Canvas {
 
