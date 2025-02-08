@@ -35,11 +35,18 @@ void CardManager::RemoveCard(CardID cardID) {
     m_Cards.erase(m_Cards.begin() + cardID);
 }
 
-bool CardManager::IsValid(int32_t cardID) {
+void CardManager::RemoveSelection(CardID cardID) {
+    auto it = std::find(m_Selection.begin(), m_Selection.end(), cardID);
+    if (it != m_Selection.end()) {
+        m_Selection.erase(it);
+    }
+}
+
+bool CardManager::IsValid(int32_t cardID) const {
     return cardID != -1 && cardID >= 0 && cardID < (int32_t)m_Cards.size();
 }
 
-Card& CardManager::Get(CardID cardID) {
+Card& CardManager::Get(CardID cardID) const {
     assert(IsValid(cardID) && "Invalid Card ID");
     return *m_Cards[cardID];
 }
