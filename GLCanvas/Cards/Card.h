@@ -22,6 +22,7 @@ public:
     virtual void OnUpdate(float dt) = 0;
     virtual void OnImGuiRender() = 0; 
 
+    virtual const glm::vec3& GetPosition() = 0;
     virtual void Drag(glm::vec3 delta) = 0;
     virtual void SetZDepth(float zdepth) = 0;
     

@@ -1,4 +1,5 @@
 #include "GLCanvas/Cards/CardManager.h"
+#include "GLCanvas/Canvas/Canvas.h"
 
 void CardManager::OnEvent(Event& event) {
     for (auto [cardID, cardptr]: m_Cards) {
@@ -19,6 +20,14 @@ void CardManager::OnImGuiRender() {
             **(bool**)(payload->Data) = true;
         }
         ImGui::EndDragDropTarget();
+    }
+    // just for debugging
+    for (CardID ID : m_Selection) {
+        ImGui::GetWindowDrawList()->AddCircleFilled(
+            Canvas::WorldToScreen(m_Cards[ID]->GetPosition()),
+            10, 
+            IM_COL32(55, 255, 35, 255)
+        );
     }
 } 
 

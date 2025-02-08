@@ -22,6 +22,9 @@ public:
     void OnUpdate(float dt) override { } 
     void OnImGuiRender() override { } 
     
+    const glm::vec3& GetPosition() override {
+        return m_Allocator[m_ObjI].position;
+    }
     void Drag(glm::vec3 delta) override { 
         m_Allocator[m_ObjI].position += delta;
     }
