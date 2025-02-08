@@ -1,8 +1,6 @@
 #include "GLCanvas/Base.h"
 #include "GLCanvas/CanvasLayer.h"
 
-#define PI glm::pi<float>()
-
 CanvasLayer::CanvasLayer() 
     : Layer("Canvas Layer")
     , m_CameraController(16.0f/9.0f, 1.0f, false) 
