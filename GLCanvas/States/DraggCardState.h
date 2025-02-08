@@ -10,7 +10,7 @@ public:
     ~DraggCardState() {}
     
     void OnEnter() override { 
-        m_CurrCardID = CVData().HoveredCardID;
+        m_CurrCardID = CVData().Cardmanager->GetHoveredCard();
         if (m_LastCardID != -1 && m_CurrCardID != -1) {
             CVData().Cardmanager->Get(m_CurrCardID).SetZDepth(1);
             CVData().Cardmanager->Get(m_LastCardID).SetZDepth(0);

@@ -31,7 +31,7 @@ void CanvasLayer::OnUpdate(float dt) {
     
     auto [mx, my] = Canvas::CVData().WindowMousePos;
     my = Canvas::CVData().ViewportSize.y - my;
-    Canvas::CVData().HoveredCardID = m_Framebuffer.ReadPixel(1, mx, my);
+    Canvas::CVData().Cardmanager->SetHoveredCard(m_Framebuffer.ReadPixel(1, mx, my));
 
     m_CameraController.OnUpdate(dt);
     m_CanvasManager.OnUpdate(dt);
@@ -65,9 +65,9 @@ void CanvasLayer::OnImGuiRender() {
             static bool* payloadPtr = &canCreateCard;
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoPreviewTooltip | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
                 if (canCreateCard) {
-                    Canvas::CVData().HoveredCardID = 
-                        Canvas::CVData().Cardmanager->AddCard(type, glm::vec3(Canvas::CVData().WorldMousePos, 1.0f));
-                    if (Canvas::CVData().Cardmanager->IsValid(Canvas::CVData().HoveredCardID)) {
+                    Canvas::CVData().Cardmanager->SetHoveredCard( 
+                        Canvas::CVData().Cardmanager->AddCard(type, glm::vec3(Canvas::CVData().WorldMousePos, 1.0f)));
+                    if (Canvas::CVData().Cardmanager->IsCardHovered()) {
                         m_CanvasManager.TransitionTo(Canvas::StateType::DraggCard);
                     }
                     canCreateCard = false;

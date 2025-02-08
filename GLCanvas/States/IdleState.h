@@ -15,10 +15,10 @@ public:
     void OnImGuiRender() override { }
     void OnExit() override { } 
     StateKey GetNextState() override { 
-        if (!Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
+        if (!Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsCardHovered()) {
             return StateType::DraggCard;
         }
-        if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsValid(CVData().HoveredCardID)) {
+        if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsCardHovered()) {
             return StateType::CreateCard;
         }
         return StateType::Idle;

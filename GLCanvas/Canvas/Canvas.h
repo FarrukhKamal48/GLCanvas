@@ -20,7 +20,6 @@ namespace StateType {
 struct CanvasData {
     CanvasCameraController* Camera;
     CardManager* Cardmanager;
-    int32_t HoveredCardID = -1;
     glm::vec2 ViewportSize = { 0, 0 };
     glm::vec2 WorldMouseDelta = { 0, 0 };
     glm::vec2 WorldMousePos = { 0, 0 };
