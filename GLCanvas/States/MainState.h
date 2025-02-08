@@ -16,6 +16,8 @@ public:
     void OnExit() override { } 
     StateKey GetNextState() override { 
         if (!Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsCardHovered()) {
+            CVData().Cardmanager->ClearSelection();
+            CVData().Cardmanager->AddSelection(CVData().Cardmanager->GetHoveredCard());
             return StateType::DraggCard;
         }
         if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsCardHovered()) {

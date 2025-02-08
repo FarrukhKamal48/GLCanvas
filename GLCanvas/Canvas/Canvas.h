@@ -11,7 +11,6 @@ namespace StateType {
         Main,
         Panning,
         DraggCard,
-        // DraggSelect,
         CreateCard,
         COUNT,
     };

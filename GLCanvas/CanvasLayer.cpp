@@ -55,7 +55,9 @@ void CanvasLayer::OnImGuiRender() {
     
     ImGui::Begin("Cards", nullptr, windowFlags); 
     {
+        static CardManager& Cardmanager = *Canvas::CVData().Cardmanager;
         float dims = std::min(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+        
         for (CardKey type = CardType::None; type < CardType::COUNT; type++) {
             std::stringstream buttonLabel;
             buttonLabel << Card::TypeName(type);
@@ -65,9 +67,11 @@ void CanvasLayer::OnImGuiRender() {
             static bool* payloadPtr = &canCreateCard;
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoPreviewTooltip | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
                 if (canCreateCard) {
-                    Canvas::CVData().Cardmanager->SetHoveredCard( 
-                        Canvas::CVData().Cardmanager->AddCard(type, glm::vec3(Canvas::CVData().WorldMousePos, 1.0f)));
-                    if (Canvas::CVData().Cardmanager->IsCardHovered()) {
+                    CardID newCard = Cardmanager.AddCard(type, glm::vec3(Canvas::CVData().WorldMousePos, 1.0f));
+                    Cardmanager.SetHoveredCard(newCard);
+                    if (Cardmanager.IsCardHovered()) {
+                        Cardmanager.ClearSelection();
+                        Cardmanager.AddSelection(newCard);
                         m_CanvasManager.TransitionTo(Canvas::StateType::DraggCard);
                     }
                     canCreateCard = false;
