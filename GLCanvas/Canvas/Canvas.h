@@ -8,7 +8,7 @@ namespace Canvas {
 typedef uint32_t StateKey;
 namespace StateType {
     enum : StateKey {
-        Idle,
+        Main,
         Panning,
         DraggCard,
         // DraggSelect,

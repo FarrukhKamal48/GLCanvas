@@ -18,7 +18,7 @@ public:
     void OnExit() override { } 
     StateKey GetNextState() override { 
         if (Input::MouseReleased(Mouse::ButtonLeft) || Input::KeyReleased(Key::LeftAlt))
-            return StateType::Idle;
+            return StateType::Main;
         return StateType::Panning;
     }
 };

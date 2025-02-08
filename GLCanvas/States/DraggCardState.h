@@ -27,7 +27,7 @@ public:
     } 
     StateKey GetNextState() override { 
         if (Input::MouseReleased(Mouse::ButtonLeft) || Input::KeyPressed(Key::LeftAlt))
-            return StateType::Idle;
+            return StateType::Main;
         return StateType::DraggCard;
     }
 private:

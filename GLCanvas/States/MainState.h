@@ -4,10 +4,10 @@
 
 namespace Canvas {
 
-class IdleState : public State {
+class MainState : public State {
 public:
-    IdleState() : State(StateType::Idle) {}
-    ~IdleState() {}
+    MainState() : State(StateType::Main) {}
+    ~MainState() {}
     
     void OnEnter() override {  }
     void OnEvent(Event& event) override { } 
@@ -21,7 +21,7 @@ public:
         if (Input::MousePressed(Mouse::ButtonRight) && !CVData().Cardmanager->IsCardHovered()) {
             return StateType::CreateCard;
         }
-        return StateType::Idle;
+        return StateType::Main;
     }
 };
 

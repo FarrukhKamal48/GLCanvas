@@ -1,7 +1,7 @@
 #include "GLCanvas/Base.h"
 #include "GLCanvas/Canvas/Canvas.h"
 
-#include "GLCanvas/States/IdleState.h"
+#include "GLCanvas/States/MainState.h"
 #include "GLCanvas/States/PanningState.h"
 #include "GLCanvas/States/DraggCardState.h"
 #include "GLCanvas/States/CreateCardState.h"
@@ -27,7 +27,7 @@ ImVec2 WorldToScreen(glm::vec2 worldCoords) {
 
 State* State::Create(StateKey type) {
     switch (type) {
-        case StateType::Idle: return new IdleState();
+        case StateType::Main: return new MainState();
         case StateType::Panning: return new PanningState();
         case StateType::DraggCard: return new DraggCardState();
         // case StateType::DraggSelect: return nullptr;

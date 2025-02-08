@@ -19,7 +19,7 @@ public:
     void Lock(bool locked) { m_IsLocked = locked; }
 private:
     std::vector<State*> m_States;
-    StateKey m_ActiveState = StateType::Idle;
+    StateKey m_ActiveState = StateType::Main;
     bool m_IsTransitioning = false;
     bool m_IsLocked = false;
 

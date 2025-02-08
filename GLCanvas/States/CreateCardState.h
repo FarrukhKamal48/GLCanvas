@@ -81,7 +81,7 @@ public:
     StateKey GetNextState() override { 
         if ((Input::MousePressed(Mouse::ButtonLeft) && !m_IsWindowFocused) || m_DropdownFinished || 
             (Input::MousePressed(Mouse::ButtonLeft) && Input::KeyPressed(Key::LeftAlt))) {
-            return StateType::Idle;
+            return StateType::Main;
         }
         return StateType::CreateCard;
     }

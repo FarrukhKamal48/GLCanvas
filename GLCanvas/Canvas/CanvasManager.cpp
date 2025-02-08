@@ -7,7 +7,7 @@ CanvasManager::CanvasManager() {
     CVData().Cardmanager = &m_CardManger;
     
     m_States.reserve(StateType::COUNT);
-    for (StateKey type = StateType::Idle; type < StateType::COUNT; type++) {
+    for (StateKey type = StateType::Main; type < StateType::COUNT; type++) {
         m_States[type] = State::Create(type);
     }
 
@@ -38,7 +38,7 @@ void CanvasManager::OnUpdate(float dt) {
     static StateKey nextState;
     nextState = m_States[m_ActiveState]->GetNextState();
     static bool transitionInLock; 
-    transitionInLock = (m_ActiveState != StateType::Idle && nextState == StateType::Idle);
+    transitionInLock = (m_ActiveState != StateType::Main && nextState == StateType::Main);
     if ((!m_IsLocked && m_ActiveState != nextState) || transitionInLock) {
         TransitionTo(nextState);
     }
