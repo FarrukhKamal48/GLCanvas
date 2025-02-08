@@ -26,11 +26,11 @@ public:
     const std::vector<CardID>& GetSelection() const { return m_Selection; }
     
     bool IsValid(int32_t cardID) const;
-    Card& Get(CardID cardID) const;
+    Card& Get(CardID cardID);
     
-    Card& operator[](CardID cardID) const { return Get(cardID); }
+    Card& operator[](CardID cardID) { return Get(cardID); }
 private:
-    std::vector<Card*> m_Cards;
+    std::unordered_map<CardID, Card*> m_Cards;
     std::vector<CardID> m_Selection;
     int32_t m_HoveredCard = -1;
 };
