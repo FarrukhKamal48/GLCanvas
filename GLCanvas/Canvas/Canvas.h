@@ -12,6 +12,8 @@ namespace StateType {
         Panning,
         DraggCard,
         CreateCard,
+        MultiSelect,
+        SelectionBox,
         COUNT,
     };
 }

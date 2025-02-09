@@ -15,7 +15,7 @@ public:
     void OnImGuiRender() override { }
     void OnExit() override { } 
     StateKey GetNextState() override { 
-        if (!Input::KeyPressed(Key::LeftAlt) && Input::MousePressed(Mouse::ButtonLeft) && CVData().Cardmanager->IsCardHovered()) {
+        if (Input::MousePressed(Mouse::ButtonLeft) && !Input::KeyPressed(Key::LeftAlt) && !Input::KeyPressed(Key::LeftControl) && CVData().Cardmanager->IsCardHovered()) {
             CVData().Cardmanager->ClearSelection();
             CVData().Cardmanager->AddSelection(CVData().Cardmanager->GetHoveredCard());
             return StateType::DraggCard;

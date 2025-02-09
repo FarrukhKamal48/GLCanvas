@@ -20,10 +20,10 @@ public:
     int32_t GetHoveredCard() const { return m_HoveredCard; };
     bool IsCardHovered() const { return IsValid(m_HoveredCard); }
 
-    void AddSelection(CardID cardID) { m_Selection.push_back(cardID); }
+    void AddSelection(CardID cardID) { m_Selection.insert(cardID); }
     void RemoveSelection(CardID cardID);
     void ClearSelection() { m_Selection.clear(); }
-    const std::vector<CardID>& GetSelection() const { return m_Selection; }
+    const std::unordered_set<CardID>& GetSelection() const { return m_Selection; }
     
     bool IsValid(int32_t cardID) const;
     Card& Get(CardID cardID);
@@ -31,6 +31,6 @@ public:
     Card& operator[](CardID cardID) { return Get(cardID); }
 private:
     std::unordered_map<CardID, Card*> m_Cards;
-    std::vector<CardID> m_Selection;
+    std::unordered_set<CardID> m_Selection;
     int32_t m_HoveredCard = -1;
 };

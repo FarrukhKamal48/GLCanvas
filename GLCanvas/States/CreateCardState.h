@@ -33,6 +33,7 @@ public:
             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings
         );
         
+        static CardManager& Cardmanager = *Canvas::CVData().Cardmanager;
         m_IsWindowFocused = ImGui::IsWindowFocused();
 
         for (CardKey newCardType = CardType::None; newCardType < CardType::COUNT; newCardType++) {
@@ -41,21 +42,23 @@ public:
             
             if (m_IsMenuSticky) {
                 if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(m_Styling.WindowWidth, m_Styling.ButtonHeight))) {
-                    m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
+                    m_NewCardID = Cardmanager.AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
                     m_DropdownFinished = true;
                 }
                 
                 static bool canCreateCard = true;
-                static bool* payloadPtr = nullptr;
+                static bool* payloadPtr = &canCreateCard;
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoPreviewTooltip | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
                     if (canCreateCard) {
-                        m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
+                        m_NewCardID = Cardmanager.AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
+                        Cardmanager.SetHoveredCard(m_NewCardID);
                         canCreateCard = false;
                     }
-                    if (CVData().Cardmanager->IsValid(m_NewCardID)) {
-                        CVData().Cardmanager->Get(m_NewCardID).Drag(glm::vec3(CVData().WorldMouseDelta, 0.0f));
+                    if (Cardmanager.IsCardHovered()) {
+                        Cardmanager.ClearSelection();
+                        Cardmanager.AddSelection(m_NewCardID);
+                        Cardmanager.Get(m_NewCardID).Drag(glm::vec3(CVData().WorldMouseDelta, 0.0f));
                     }
-                    payloadPtr = &canCreateCard;
                     ImGui::SetDragDropPayload("CREATE_CARD_BOOL", &payloadPtr, sizeof(payloadPtr));
                     ImGui::EndDragDropSource();
                 }
@@ -63,7 +66,12 @@ public:
             else {
                 if (ImGui::Button(buttonLabel.str().c_str(), ImVec2(m_Styling.WindowWidth, m_Styling.ButtonHeight)) || 
                     (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ImGui::IsItemHovered())) {
-                    m_NewCardID = CVData().Cardmanager->AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
+                    m_NewCardID = Cardmanager.AddCard(newCardType, glm::vec3(CVData().WorldMousePos, 1.0f));
+                    Cardmanager.SetHoveredCard(m_NewCardID);
+                    if (Cardmanager.IsCardHovered()) {
+                        Cardmanager.ClearSelection();
+                        Cardmanager.AddSelection(m_NewCardID);
+                    }
                     m_DropdownFinished = true;
                 }
             }
@@ -91,7 +99,7 @@ private:
     bool m_IsWindowFocused = true;
     bool m_DropdownFinished = false;
 
-    bool m_IsMenuSticky = true;
+    bool m_IsMenuSticky = false;
     struct Styling {
         float WindowRounding = 5.0f;
         float WindowWidth = 200;
