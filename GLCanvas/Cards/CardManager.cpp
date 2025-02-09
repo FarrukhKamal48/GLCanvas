@@ -48,10 +48,12 @@ void CardManager::RemoveCard(CardID cardID) {
     }
 }
 
-void CardManager::RemoveSelection(CardID cardID) {
-    auto it = std::find(m_Selection.begin(), m_Selection.end(), cardID);
-    if (it != m_Selection.end()) {
-        m_Selection.erase(it);
+void CardManager::ToggleSelection(CardID cardID) {
+    if (m_Selection.count(cardID)) {
+        m_Selection.erase(cardID);
+    }
+    else {
+        m_Selection.insert(cardID);
     }
 }
 

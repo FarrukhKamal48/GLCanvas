@@ -5,7 +5,7 @@
 #include "GLCanvas/States/PanningState.h"
 #include "GLCanvas/States/DraggCardState.h"
 #include "GLCanvas/States/CreateCardState.h"
-#include "States/MultiSelectState.h"
+#include "States/ClickSelectState.h"
 
 namespace Canvas {
 static CanvasData s_CVData;
@@ -32,7 +32,7 @@ State* State::Create(StateKey type) {
         case StateType::Panning: return new PanningState();
         case StateType::DraggCard: return new DraggCardState();
         case StateType::CreateCard: return new CreateCardState();
-        case StateType::MultiSelect: return new MultiSelectState();
+        case StateType::ClickSelect: return new ClickSelectState();
     }
     return nullptr;
 }

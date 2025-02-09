@@ -71,7 +71,7 @@ void CanvasLayer::OnImGuiRender() {
                     Cardmanager.SetHoveredCard(newCard);
                     if (Cardmanager.IsCardHovered()) {
                         Cardmanager.ClearSelection();
-                        Cardmanager.AddSelection(newCard);
+                        Cardmanager.ToggleSelection(newCard);
                         m_CanvasManager.TransitionTo(Canvas::StateType::DraggCard);
                     }
                     canCreateCard = false;

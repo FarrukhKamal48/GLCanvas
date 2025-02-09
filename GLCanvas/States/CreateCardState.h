@@ -56,7 +56,7 @@ public:
                     }
                     if (Cardmanager.IsCardHovered()) {
                         Cardmanager.ClearSelection();
-                        Cardmanager.AddSelection(m_NewCardID);
+                        Cardmanager.ToggleSelection(m_NewCardID);
                         Cardmanager.Get(m_NewCardID).Drag(glm::vec3(CVData().WorldMouseDelta, 0.0f));
                     }
                     ImGui::SetDragDropPayload("CREATE_CARD_BOOL", &payloadPtr, sizeof(payloadPtr));
@@ -70,7 +70,7 @@ public:
                     Cardmanager.SetHoveredCard(m_NewCardID);
                     if (Cardmanager.IsCardHovered()) {
                         Cardmanager.ClearSelection();
-                        Cardmanager.AddSelection(m_NewCardID);
+                        Cardmanager.ToggleSelection(m_NewCardID);
                     }
                     m_DropdownFinished = true;
                 }
